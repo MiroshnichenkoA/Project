@@ -8,7 +8,8 @@ namespace Project
         {
             Bot bot = new Bot();
             bot.Greet();
-
+            int userInterested = bot.GetUserSimpleAnswer();
+            bot.AskForIntroducing(userInterested);
         }
     }
 }
