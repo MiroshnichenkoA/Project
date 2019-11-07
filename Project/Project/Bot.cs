@@ -11,7 +11,7 @@ namespace Project
     {
         #region Fields
         private static readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
-        public static readonly string _sorryMessage = "- Sorry. Can't understand you!";
+        private static readonly string _sorryMessage = "- Sorry. Can't understand you!";
         private static readonly string _askAgainForInvalidAnswer = " Please, insert \"{0}\" and/or \"{1}\" only";
         private static readonly string _goodbye = "- Goodbye! We are hope to see you soon!";
         private static readonly string _glad = "- Glad to hear this!";
@@ -23,8 +23,12 @@ namespace Project
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
         private static readonly string _introduceLoansCondition = "Shall I show you the loans conditions?";
         private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. \n Aim: {3}";
-        public static readonly string _askToChooseCredit = "\n- Choose the type of credit you need. Press the number you need.";
+        private static readonly string _askToChooseCredit = "\n- Choose the type of credit you need. Press the number you need.";
+        private static readonly string _askAboutIncome = "- {0}, you have to insert your estimated income. \nI'll use this information to calculate the estimate amount of credit we can propose to you. \nAlso I'll put this information in your profile.";
         #endregion
+            
+        public static string SorryMessage { get { return _sorryMessage; } }
+        public static string AskToChooseCredit { get { return _askToChooseCredit; } }
 
         #region Constructor
         public Bot()
@@ -105,6 +109,18 @@ namespace Project
             }
             return userInput;
         }
+        public static string TryParseToDouble(string userInput)
+        {
+            double num;
+            bool check = Double.TryParse(userInput, out num);
+            while (check == false)
+            {
+                Console.WriteLine(_sorryMessage);
+                userInput = Console.ReadLine();
+                check = Double.TryParse(userInput, out num);
+            }
+            return userInput;
+        }
         private void Goodbye()
         {
             Console.WriteLine(_goodbye);
@@ -178,13 +194,21 @@ namespace Project
                 Goodbye();
             }
         }
+        public double GetApplicantIncome(Applicant applicant)
+        {
+            Console.WriteLine(_askAboutIncome, applicant.ApplicantName);
+            string userInput = Console.ReadLine();
+            userInput = TryParseToDouble(userInput);
+            double applicantIncome = Double.Parse(userInput);
+            return applicantIncome;
+        }
         #endregion
 
         #region Methods to work with loans
         public void ShowTheListOfLoans(Applicant applicant)
         {
-            Console.WriteLine(_introduceLoans, applicant.ApplicantName, Loan.collectionOfLoansThatCanBeProvided.Capacity);
-            foreach (LoanName loan in Loan.collectionOfLoansThatCanBeProvided)
+            Console.WriteLine(_introduceLoans, applicant.ApplicantName, Loan.CollectionOfLoansThatCanBeProvided.Capacity);
+            foreach (LoanName loan in Loan.CollectionOfLoansThatCanBeProvided)
             {
                 Console.WriteLine(loan);
             }
@@ -221,6 +245,11 @@ namespace Project
                     break;
             }
             return defaultLoan;
+        }
+        public double EstimateCreditSum(double income, dynamic loan)
+        {
+            double estimateSum = Underwriter.Underwriter.EstimateSum(income);
+            return estimateSum;
         }
         #endregion
     }

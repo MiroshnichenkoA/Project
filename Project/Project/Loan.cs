@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Project
 {
-  public class Loan
+    public class Loan
     {
         #region Fields
         protected static LoanName _name;
@@ -17,7 +17,9 @@ namespace Project
         protected double _creditAmount;
         protected double _paymontPerMonth;
         protected double _currentBalance;
-        public static readonly List<LoanName> collectionOfLoansThatCanBeProvided = new List<LoanName> { LoanName.car, LoanName.consumer, LoanName.estate, LoanName.overdraft };
+        protected static List<LoanName> _collectionOfLoansThatCanBeProvided = new List<LoanName> { LoanName.car, LoanName.consumer, LoanName.estate, LoanName.overdraft };
         #endregion
+
+        public static List<LoanName> CollectionOfLoansThatCanBeProvided { get { return _collectionOfLoansThatCanBeProvided; } }
     }
 }

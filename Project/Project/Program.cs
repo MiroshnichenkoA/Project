@@ -26,10 +26,16 @@ namespace Project
             #endregion
 
             #region Bot makes a loan proposal for the applicant
+            double applicantIncome = bot.GetApplicantIncome(applicant);
             bot.ShowTheListOfLoans(applicant);
             bot.AskToChooseCreditType();
             int choosedLoan = applicant.ChooseCreditType();
             dynamic loan = bot.CreateALoanType(choosedLoan);
+            double estimatedCredit = bot.EstimateCreditSum(applicantIncome, loan);
+            #endregion
+
+            #region Bot starts to write applicant's profile
+            ApplicantProfile applicantProfile = new ApplicantProfile(applicant, applicantIncome);
             #endregion
         }
     }

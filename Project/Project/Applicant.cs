@@ -39,8 +39,8 @@ namespace Project
         {
             while (choise != (int)LoanName.car && choise != (int)LoanName.consumer && choise != (int)LoanName.estate && choise != (int)LoanName.overdraft)
             {
-                Console.WriteLine(Bot._sorryMessage);
-                Console.WriteLine(Bot._askToChooseCredit);
+                Console.WriteLine(Bot.SorryMessage);
+                Console.WriteLine(Bot.AskToChooseCredit);
                 Console.WriteLine($"{(int)LoanName.car} - {LoanName.car}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.estate} - {LoanName.estate}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
                 string inputAgain = Console.ReadLine();
                 inputAgain = Bot.TryParseToInt(inputAgain);

@@ -10,7 +10,7 @@ namespace Project
         private readonly string _surname;
         private readonly string _name;
         private readonly DateTime _dateOfBirth;
-        private readonly string _sex;
+        private readonly char _sex;
         private readonly string _passportID;
         private readonly DateTime _dateOfIssue;
         private readonly DateTime _dateOfExpiry;
@@ -34,7 +34,7 @@ namespace Project
         public string Surname { get { return _surname; } }
         public string Name { get { return _name; } }
         public DateTime DateOfBirth { get { return _dateOfBirth; } }
-        public string Sex { get { return _sex; } }
+        public char Sex { get { return _sex; } }
         public string ID { get { return _passportID; } }
         public DateTime DateOfIssue { get { return _dateOfIssue; } }
         public DateTime DateOfExpiry { get { return _dateOfExpiry; } }
