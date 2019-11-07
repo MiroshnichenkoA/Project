@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Project
 {
-    class ConsumeLoan : Loan
+    class Overdraft : Loan, ICard
     {
-        private static readonly LoanName _name = LoanName.consumer;
-        private static readonly string _purpose = Constants.purposeConsume;
-        private static readonly double _interestRate = Constants.interestRateConsume;
-        private static readonly int _maxTermForLoan = (int)MaxTermForLoan.consumer;
+        private static readonly LoanName _name = LoanName.overdraft;
+        private static readonly string _purpose = Constants.purposeOverdraft;
+        private static readonly double _interestRate = Constants.interestRateOverdraft;
+        private static readonly int _maxTermForLoan = (int)MaxTermForLoan.overdraft;
 
         #region Properties
         public DateTime IssueTime { get { return _issueTime; } }
@@ -20,11 +20,11 @@ namespace Project
         #endregion
 
         #region Constructs
-        public ConsumeLoan()
+        public Overdraft()
         {
         }
 
-        public ConsumeLoan(double creditAmount)
+        public Overdraft(double creditAmount)
         {
             _creditAmount = creditAmount;
         }

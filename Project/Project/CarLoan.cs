@@ -4,7 +4,35 @@ using System.Text;
 
 namespace Project
 {
-    class CarLoan 
+    class CarLoan : Loan
     {
+       private static readonly LoanName _name = LoanName.car;
+       private static readonly string _purpose = Constants.purposeCar;
+       private static readonly double _interestRate = Constants.interestRateCar;
+       private static readonly int _maxTermForLoan = (int) MaxTermForLoan.car;
+
+        #region Properties
+        public DateTime IssueTime { get { return _issueTime; } }
+        public DateTime ExperianTime { get { return _experianTime; } }
+        protected double CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
+        public double PaymontPerMonth { get { return _paymontPerMonth; } }
+        public double CurrentBalance { get { return _currentBalance; } }
+        #endregion
+
+        #region Constructs
+        public CarLoan()
+        {
+        }
+
+        public CarLoan(double creditAmount)
+        {
+            _creditAmount = creditAmount;
+        }
+        #endregion
+        public static (LoanName, int, double, string) Conditions()
+        {
+            (LoanName, int, double, string) conditions;
+            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose);
+        }
     }
 }
