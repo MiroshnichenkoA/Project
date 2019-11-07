@@ -35,6 +35,11 @@ namespace Project
         #endregion
 
         #region Methods
+        internal DateTime WhenApplicantGotAdult()
+        {
+            DateTime dateApplicantGetAdult = ApplicantDateOfBirth.AddYears(Constants.adultYears);
+            return dateApplicantGetAdult;
+        }
         #endregion
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Project
 {
-    class ConsumeLoan
+    class EstateLoan
     {
     }
 }

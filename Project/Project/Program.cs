@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Project
 {
@@ -11,15 +14,17 @@ namespace Project
             bot.Greet();
             int userInterested = bot.GetUserSimpleAnswer();
             #endregion
+
             #region Bot gets user information to create new Applicant
             bot.AskForIntroducing(userInterested);
             (string, string) applicantFullName = bot.GetApplicantFullName();
             DateTime applicantBirthday = bot.GetApplicantDateOfBirth(applicantFullName);
             Applicant applicant = new Applicant(applicantFullName.Item1, applicantFullName.Item2, applicantBirthday);
-            
+            bot.CheckIfApplicantIsAdult(applicant);
+            //TODO: logg
             #endregion
-            #region Bot makes a loan proposal for the applicant
 
+            #region Bot makes a loan proposal for the applicant
             #endregion
         }
     }

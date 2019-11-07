@@ -12,12 +12,14 @@ namespace Project
         #region Fields
         private readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
         private readonly string _sorryMessage = "- Sorry. Can't understand you!";
-        private readonly string _askAgainForInvalidAnswer = "Please, insert \"{0}\" and/or \"{1}\" only";
-        private readonly string _goodbye = "Goodbye! We are hope to see you soon!";
-        private readonly string _glad = "Glad to hear this!";
-        private readonly string _askForIntroducing = "Please, introduse yourself. Tell me your name and surname";
-        private readonly string _askWhereIsTheName = "Is {0} your name?";
-        private readonly string _askToProvideBirthday = "Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";
+        private readonly string _askAgainForInvalidAnswer = " Please, insert \"{0}\" and/or \"{1}\" only";
+        private readonly string _goodbye = "- Goodbye! We are hope to see you soon!";
+        private readonly string _glad = "- Glad to hear this!";
+        private readonly string _askForIntroducing = "- Please, introduse yourself. Tell me your name and surname";
+        private readonly string _askWhereIsTheName = "- Is {0} your name?";
+        private readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";
+        private readonly string _loansAreOnlyForAdult = "Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
+        private readonly string _incorrectDateOfBirth = "The date {0} you provide is more then current date {1}. \n Are you sure it's your birthday? \n Please, enter the date again:";
         #endregion
 
         #region Constructor
@@ -87,6 +89,22 @@ namespace Project
             }
             return userInput;
         }
+        private void Goodbye()
+        {
+            Console.WriteLine(_goodbye);
+            //TODO: shut down
+        }
+        private DateTime CheckedBirhday(DateTime dateOfBirth)
+        {
+            while (dateOfBirth > DateTime.Now)
+            {
+                Console.WriteLine(_incorrectDateOfBirth, dateOfBirth, DateTime.Now);
+                string userInput = Console.ReadLine();
+                userInput = TryParseToDate(userInput);
+                dateOfBirth = DateTime.Parse(userInput);
+            }
+            return dateOfBirth;
+        }
         #endregion
 
         #region Main Methods to get users Info
@@ -109,8 +127,7 @@ namespace Project
         {
             if (userInterested == (int)SimpleAnswers.NO)
             {
-                Console.WriteLine(_goodbye);
-                //TODO: shut down
+                Goodbye();
             }
             else
             {
@@ -133,7 +150,13 @@ namespace Project
             string userInput = Console.ReadLine();
             userInput = TryParseToDate(userInput);
             DateTime dateOfBitrh = DateTime.Parse(userInput);
+            dateOfBitrh = CheckedBirhday(dateOfBitrh);
             return dateOfBitrh;
+        }
+        public void CheckIfApplicantIsAdult(Applicant applicant)
+        {
+            DateTime dateApplicantGetAdult = applicant.WhenApplicantGotAdult();
+            if (DateTime.Now < dateApplicantGetAdult) Console.WriteLine(_loansAreOnlyForAdult,(dateApplicantGetAdult.Year - DateTime.Now.Year));
         }
         #endregion
     }
