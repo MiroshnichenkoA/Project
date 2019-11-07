@@ -23,7 +23,6 @@ namespace Project
             _surname = applicant.ApplicantSurname;
             _name = applicant.ApplicantName;
             _dateOfBirth = applicant.ApplicantDateOfBirth;
-            _sex = applicant.ApplicantSex;
             _passportID = passportID;
             _dateOfIssue = dateOfIssue;
             _dateOfExpiry = _dateOfIssue.AddYears(Constants.passportExpirianTerm);
