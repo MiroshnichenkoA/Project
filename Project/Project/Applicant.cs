@@ -73,11 +73,10 @@ namespace Project
         }
         public ArrayList FillTheProfile(ArrayList applicantProfile)
         {
-            string name = (string)SearchInProfile(applicantProfile, ApplicantName);
-            string surname = (string)SearchInProfile(applicantProfile, ApplicantSurname);
-            DateTime birthday = (DateTime)SearchInProfile(applicantProfile, ApplicantDateOfBirth);
             string passportID = Bot.AskPassportID();
             DateTime issue = Bot.AskPassportIssueDate();
+            Passport passport = new Passport((string)SearchInProfile(applicantProfile, ApplicantName), (string)SearchInProfile(applicantProfile, ApplicantSurname), (DateTime)SearchInProfile(applicantProfile, ApplicantDateOfBirth), passportID, issue);
+            Bot.InsertIntoProfile(applicantProfile, passportID, issue);
             return applicantProfile;
         }
         #endregion

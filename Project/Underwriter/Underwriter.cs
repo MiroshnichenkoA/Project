@@ -14,7 +14,6 @@ namespace Underwriter
             estimateSum = estimateSum * conditions.Item2;
             return estimateSum;
         }
-
         private static double CreditPosibility(double income)
         {
             double estimatePaymontPerMonth = income * Constants.creditPossibilityRatio;

@@ -20,7 +20,7 @@ namespace Project
         private static readonly string _askWhereIsTheName = "- Is {0} your name?";
         private static readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";
         private static readonly string _loansAreOnlyForAdult = "Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
-        private static readonly string _incorrectDateOfBirth = "The date {0} you provide is more then current date {1}. \n Are you sure it's your birthday? \n Please, enter the date again:";
+        private static readonly string _incorrectDate = "The date {0} you provide is more then current date {1}. \n Are you sure it's right date? \n Please, enter the date again:";
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
         private static readonly string _introduceLoansCondition = "Shall I show you the loans conditions?";
         private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. You can be provided from {4} BYN to {5} BYN. \n Aim: {3}";
@@ -31,6 +31,8 @@ namespace Project
         private static readonly string _askWhetherToChangeLoan = "- {0}, do you want to choose another loan product?";
         private static readonly string _ifToContinue = "- So do you want to take a loan?";
         private static readonly string _continueToInsertProfile = "- Perfect. In that case let's fill out your profile";
+        private static readonly string _askToProvidePassportIssue = "- Insert your passport issue date, please.";
+        private static readonly string _askToProvidePassportID = "- Insert your passport ID, please.";
         #endregion
 
         public static string SorryMessage { get { return _sorryMessage; } }
@@ -132,16 +134,16 @@ namespace Project
             Console.WriteLine(_goodbye);
             //TODO: shut down
         }
-        private static DateTime CheckedBirhday(DateTime dateOfBirth)
+        private static DateTime CheckedDate(DateTime date)
         {
-            while (dateOfBirth > DateTime.Now)
+            while (date > DateTime.Now)
             {
-                Console.WriteLine(_incorrectDateOfBirth, dateOfBirth, DateTime.Now);
+                Console.WriteLine(_incorrectDate, date, DateTime.Now);
                 string userInput = Console.ReadLine();
                 userInput = TryParseToDate(userInput);
-                dateOfBirth = DateTime.Parse(userInput);
+                date = DateTime.Parse(userInput);
             }
-            return dateOfBirth;
+            return date;
         }
         private static ArrayList CreateListIfLoans()
         {
@@ -180,6 +182,14 @@ namespace Project
             int index = profile.IndexOf(info);
             object searched = profile[index];
             return searched;
+        }
+        private static bool CheckedID(string userInput)
+        {
+            bool check = false;
+            Console.WriteLine(userInput.Length);
+            if (userInput.Length == 14) check = true;
+            else check = false;
+            return check;
         }
         #endregion
 
@@ -250,7 +260,7 @@ namespace Project
             string userInput = Console.ReadLine();
             userInput = TryParseToDate(userInput);
             DateTime dateOfBitrh = DateTime.Parse(userInput);
-            dateOfBitrh = CheckedBirhday(dateOfBitrh);
+            dateOfBitrh = CheckedDate(dateOfBitrh);
             return dateOfBitrh;
         }
         public static void CheckIfApplicantIsAdult(Applicant applicant)
@@ -269,6 +279,27 @@ namespace Project
             userInput = TryParseToDouble(userInput);
             double applicantIncome = Double.Parse(userInput);
             return applicantIncome;
+        }
+        public static string AskPassportID()
+        {
+            bool check;
+            string userInput;
+            do
+            {
+                Console.WriteLine(_askToProvidePassportID);
+                userInput = Console.ReadLine();
+                check = CheckedID(userInput);
+            } while (check == false);
+            return userInput;
+        }
+        public static DateTime AskPassportIssueDate()
+        {
+            Console.WriteLine(_askToProvidePassportIssue);
+            string userInput = Console.ReadLine();
+            userInput = TryParseToDate(userInput);
+            DateTime date = DateTime.Parse(userInput);
+            date = CheckedDate(date);
+            return date;
         }
         #endregion
 
