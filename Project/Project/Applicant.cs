@@ -51,10 +51,10 @@ namespace Project
             }
             return choise;
         }
-        private object SearchInProfile(ArrayList profile, object info)
+        private T SearchInProfile<T>(ArrayList profile, T info)
         {
             int index = profile.IndexOf(info);
-            object searched = profile[index];
+            T searched = (T)profile[index];
             return searched;
         }
         #endregion

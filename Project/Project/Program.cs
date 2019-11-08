@@ -58,7 +58,12 @@ namespace Project
             applicantProfile = applicant.FillTheProfile(applicantProfile);
             Console.WriteLine(Bot.ProfileIsFilled, applicant.ApplicantName);
             if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber(applicant);
-            //TODO подписка на смс
+            Bot.InsertIntoProfile(applicantProfile, applicant.PhoneNumber);
+            //TODO Event sms
+            // TODO logg
+            #endregion
+
+            #region
             #endregion
         }
     }

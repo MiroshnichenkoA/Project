@@ -40,9 +40,11 @@ namespace Project
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
         #endregion
 
+        #region Properties
         public static string SorryMessage { get { return _sorryMessage; } }
         public static string AskToChooseCredit { get { return _askToChooseCredit; } }
         public static string ProfileIsFilled { get { return _profileIsFilled; } }
+        #endregion
 
         #region Constructor
         public Bot()
@@ -82,11 +84,11 @@ namespace Project
             }
             return userAnswer;
         }
-        private static (string, string) CorrectPositionsOfNameAndSurname((string, string) fullName)
+        private static (T, T) CorrectPositionsOfNameAndSurname<T>((T, T) fullName)
         {
             Console.WriteLine(String.Format(_askWhereIsTheName, fullName.Item1));
             int namePosition = GetUserSimpleAnswer();
-            (string, string) correctFullName;
+            (T, T) correctFullName;
             if (namePosition == (int)SimpleAnswers.YES)
             {
                 correctFullName.Item1 = fullName.Item1;
@@ -183,10 +185,10 @@ namespace Project
             else Console.WriteLine("Smth goes wrong!!!");
             return estimateSum;
         }
-        private static object SearchInProfile(ArrayList profile, object info)
+        private static T SearchInProfile<T>(ArrayList profile, T info)
         {
             int index = profile.IndexOf(info);
-            object searched = profile[index];
+            T searched = (T)profile[index];
             return searched;
         }
         private static bool CheckedID(string userInput)
