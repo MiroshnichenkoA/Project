@@ -6,12 +6,14 @@ using System.Text;
 
 namespace Project
 {
-    class Applicant
+    [AdultAge]
+    sealed class Applicant
     {
         #region PrivateFields
         private readonly string _applicantSurname;
         private readonly string _applicantName;
         private readonly DateTime _applicantDateOfBirth;
+        private readonly int _age;
         private readonly int _applicantInternalID;
         private static int indexForApplicantCounting = Constants.startNumberDefenition;
         private Passport _applicantPassport;
@@ -24,6 +26,7 @@ namespace Project
             _applicantSurname = surname;
             _applicantName = name;
             _applicantDateOfBirth = dateOfBirth;
+            _age = _applicantDateOfBirth.Year - DateTime.Now.Year;
             _applicantInternalID = indexForApplicantCounting + 1;
             indexForApplicantCounting += 1;
         }
@@ -33,6 +36,7 @@ namespace Project
         public string ApplicantSurname {get { return _applicantSurname; } }
         public string ApplicantName { get { return _applicantName; } }
         public DateTime ApplicantDateOfBirth { get { return _applicantDateOfBirth; } }
+        public int Age { get { return _age; } }
         public int ApplicantInternalID { get { return _applicantInternalID; } }
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
         #endregion
@@ -62,8 +66,7 @@ namespace Project
         #region Main Methods
         internal DateTime WhenApplicantGotAdult()
         {
-            DateTime dateApplicantGetAdult = ApplicantDateOfBirth.AddYears(Constants.adultYears);
-            return dateApplicantGetAdult;
+            return ApplicantDateOfBirth.AddYears(Constants.adultYears);
         }
         public int ChooseCreditType()
         {

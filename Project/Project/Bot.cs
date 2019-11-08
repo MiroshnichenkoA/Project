@@ -44,6 +44,7 @@ namespace Project
         public static string SorryMessage { get { return _sorryMessage; } }
         public static string AskToChooseCredit { get { return _askToChooseCredit; } }
         public static string ProfileIsFilled { get { return _profileIsFilled; } }
+        public static string LoanAreOnlyForAdult { get { return _loansAreOnlyForAdult; } }
         #endregion
 
         #region Constructor
@@ -137,7 +138,7 @@ namespace Project
             }
             return userInput;
         }
-        private static void Goodbye()
+        public static void Goodbye()
         {
             Console.WriteLine(_goodbye);
             //TODO: shut down
@@ -172,13 +173,11 @@ namespace Project
         }
         public static (LoanName, double) ShowConditions(dynamic loan)
         {
-            (LoanName, double) conditions = loan.ThisConditions();
-            return conditions;
+            return loan.ThisConditions();
         }
         private static double AskUnderwritter(double income, dynamic loan)
         {
-            (double, int) conditions = loan.ThisConditionsForUnderwriter();
-            double estimateSum = Underwriter.Underwriter.EstimateSum(income, conditions);
+            double estimateSum = Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter());
             if (estimateSum >= loan.MaxSum) estimateSum = loan.MaxSum;
             else if (estimateSum < loan.MinSum) estimateSum = 0;
             else if (estimateSum >= loan.MinSum && estimateSum < loan.MaxSum) estimateSum = estimateSum;
@@ -188,37 +187,32 @@ namespace Project
         private static T SearchInProfile<T>(ArrayList profile, T info)
         {
             int index = profile.IndexOf(info);
-            T searched = (T)profile[index];
-            return searched;
+            return (T)profile[index];
         }
         private static bool CheckedID(string userInput)
         {
-            bool check = false;
-            if (userInput.Length == 14) check = true;
-            else check = false;
-            return check;
+            if (userInput.Length == 14) return true;
+            else return false;
         }
         private static string CheckIsItPhoneNumber(string phoneNumber)
         {
-            string[] numbersInPhoneNumber = phoneNumber.Split('-');
             int flag = Constants.startNumberDefenition;
        
-            if (numbersInPhoneNumber.Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
-            for (int i = 0; i < numbersInPhoneNumber.Length; i++)
+            if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
+            for (int i = 0; i < phoneNumber.Split('-').Length; i++)
             {
-                if (Int32.TryParse(numbersInPhoneNumber[i], out i) == false) flag += 1;  
+                if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;  
             }
             //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             while (flag != Constants.startNumberDefenition)
             {
                 Console.WriteLine(_sorryMessage);
                 phoneNumber = Console.ReadLine();
-                numbersInPhoneNumber = phoneNumber.Split('-');
                 flag = Constants.startNumberDefenition;
-                if (numbersInPhoneNumber.Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
-                for (int i = 0; i < numbersInPhoneNumber.Length; i++)
+                if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
+                for (int i = 0; i < phoneNumber.Split('-').Length; i++)
                 {
-                    if (Int32.TryParse(numbersInPhoneNumber[i], out i) == false) flag += 1;
+                    if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
                 }
                 //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             }
@@ -236,11 +230,8 @@ namespace Project
         {
             string userAnswer = Console.ReadLine().ToUpper();
             userAnswer = ValidUserAnswer(userAnswer);
-
-            int result = Constants.startNumberDefenition;
-            if (userAnswer == Constants.yesString) result = (int)SimpleAnswers.YES;
-            else result = (int)SimpleAnswers.NO;
-            return result;
+            if (userAnswer == Constants.yesString) return (int)SimpleAnswers.YES;
+            else return (int)SimpleAnswers.NO;
         }
         public static void AskForIntroducing(int userInterested)
         {
@@ -284,8 +275,7 @@ namespace Project
             string[] splittedUserInput = userInput.Split(" ");
             splittedUserInput = ValidUserAnswer(splittedUserInput);
             (string, string) fullName = (splittedUserInput[0], splittedUserInput[1]);
-            (string, string) correctFullName = CorrectPositionsOfNameAndSurname(fullName);
-            return correctFullName;
+            return CorrectPositionsOfNameAndSurname(fullName);
         }
         public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
         {
@@ -293,17 +283,27 @@ namespace Project
             string userInput = Console.ReadLine();
             userInput = TryParseToDate(userInput);
             DateTime dateOfBitrh = DateTime.Parse(userInput);
-            dateOfBitrh = CheckedDate(dateOfBitrh);
-            return dateOfBitrh;
+            return CheckedDate(dateOfBitrh);
         }
         public static void CheckIfApplicantIsAdult(Applicant applicant)
         {
-            DateTime dateApplicantGetAdult = applicant.WhenApplicantGotAdult();
-            if (DateTime.Now < dateApplicantGetAdult)
+            if (Bot.ValidateApplicantAge(applicant) == false)
             {
-                Console.WriteLine(_loansAreOnlyForAdult, (dateApplicantGetAdult.Year - DateTime.Now.Year));
-                Goodbye();
+                Console.WriteLine(Bot.LoanAreOnlyForAdult, (applicant.WhenApplicantGotAdult().Year - DateTime.Now.Year));
+                Bot.Goodbye();
             }
+        }
+     
+    public static bool ValidateApplicantAge(Applicant applicant)
+        {
+            Type t = typeof(Applicant);
+            object[] fields = t.GetCustomAttributes(true);
+            foreach (AdultAgeAttribute field in fields)
+            {
+                if (applicant.Age >= field.Age) return true;
+                else return false;
+            }
+            return true;
         }
         public static double GetApplicantIncome(Applicant applicant)
         {
