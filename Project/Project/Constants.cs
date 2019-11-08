@@ -49,10 +49,18 @@ namespace Project
         public const byte startNumberDefenition = 0;
         public const int monthInYear = 12;
         public const double toPer = 100;
+        #region Phone Format
+        public const int numberOfSlotsInPhoneNumberFormat = 4;
+        public const int numberInFirstSlotInPhoneNumberFormat = 2;
+        public const int numberInSecondSlotInPhoneNumberFormat = 3;
+        public const int numberOfCharsInPhoneNumberFormat = 12;
+        #endregion
         public const string yesString = "YES";
         public const string noString = "NO";
         public const string tellName = "your name";
         public const string tellSurname = "your surname";
+        public const string male = "M";
+        public const string female = "F";
         #endregion
     }
 }

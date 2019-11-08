@@ -33,10 +33,16 @@ namespace Project
         private static readonly string _continueToInsertProfile = "- Perfect. In that case let's fill out your profile";
         private static readonly string _askToProvidePassportIssue = "- Insert your passport issue date, please.";
         private static readonly string _askToProvidePassportID = "- Insert your passport ID, please.";
+        private static readonly string _whatIsYourSex = "- If you are man, please, enter M, and if you are woman, pleae enter F. Thank you.";
+        private static readonly string _anyChild = $"- Do you have kids under {Constants.adultYears} year's old?";
+        private static readonly string _howManyChild = "- How many?";
+        private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
+        private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
         #endregion
 
         public static string SorryMessage { get { return _sorryMessage; } }
         public static string AskToChooseCredit { get { return _askToChooseCredit; } }
+        public static string ProfileIsFilled { get { return _profileIsFilled; } }
 
         #region Constructor
         public Bot()
@@ -186,10 +192,35 @@ namespace Project
         private static bool CheckedID(string userInput)
         {
             bool check = false;
-            Console.WriteLine(userInput.Length);
             if (userInput.Length == 14) check = true;
             else check = false;
             return check;
+        }
+        private static string CheckIsItPhoneNumber(string phoneNumber)
+        {
+            string[] numbersInPhoneNumber = phoneNumber.Split('-');
+            int flag = Constants.startNumberDefenition;
+       
+            if (numbersInPhoneNumber.Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
+            for (int i = 0; i < numbersInPhoneNumber.Length; i++)
+            {
+                if (Int32.TryParse(numbersInPhoneNumber[i], out i) == false) flag += 1;  
+            }
+            //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
+            while (flag != Constants.startNumberDefenition)
+            {
+                Console.WriteLine(_sorryMessage);
+                phoneNumber = Console.ReadLine();
+                numbersInPhoneNumber = phoneNumber.Split('-');
+                flag = Constants.startNumberDefenition;
+                if (numbersInPhoneNumber.Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
+                for (int i = 0; i < numbersInPhoneNumber.Length; i++)
+                {
+                    if (Int32.TryParse(numbersInPhoneNumber[i], out i) == false) flag += 1;
+                }
+                //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
+            }
+            return phoneNumber;
         }
         #endregion
 
@@ -301,6 +332,48 @@ namespace Project
             date = CheckedDate(date);
             return date;
         }
+        public static string AskSex()
+        {
+            Console.WriteLine(_whatIsYourSex);
+            string userInput = Console.ReadLine().ToUpper();
+            while (userInput != Constants.male && userInput != Constants.female)
+            {
+                Console.WriteLine(_askAgainForInvalidAnswer, Constants.male, Constants.female);
+                userInput = Console.ReadLine().ToUpper();
+            }
+            return userInput;
+        }
+        public static int AskAboutChild()
+        {
+            Console.WriteLine(_anyChild);
+            int answer = GetUserSimpleAnswer();
+            string userInput;
+            switch (answer)
+            {
+                case (int)SimpleAnswers.YES:
+                    {
+                        Console.WriteLine(_howManyChild);
+                        userInput = Console.ReadLine();
+                        userInput = TryParseToInt(userInput);
+                        answer = Int32.Parse(userInput);
+                    }
+                    break;
+                case (int)SimpleAnswers.NO: answer = Constants.startNumberDefenition;
+                    break;
+                default:
+                    Console.WriteLine("Smth goes wrong!!!");
+                    break;
+            }
+            return answer;
+        }
+        public static string AskPhoneNumber(Applicant applicant)
+        {
+            Console.WriteLine(_noPhoneNumber);
+            string phoneNumber = Console.ReadLine();
+            phoneNumber = CheckIsItPhoneNumber(phoneNumber);
+            return phoneNumber;
+        }
+
         #endregion
 
         #region Methods to work with loans

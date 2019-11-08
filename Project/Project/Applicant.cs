@@ -15,6 +15,7 @@ namespace Project
         private readonly int _applicantInternalID;
         private static int indexForApplicantCounting = Constants.startNumberDefenition;
         private Passport _applicantPassport;
+        private string _phoneNumber;
         #endregion
 
         #region Constructor
@@ -33,6 +34,7 @@ namespace Project
         public string ApplicantName { get { return _applicantName; } }
         public DateTime ApplicantDateOfBirth { get { return _applicantDateOfBirth; } }
         public int ApplicantInternalID { get { return _applicantInternalID; } }
+        public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
         #endregion
 
         #region Help Methods
@@ -73,11 +75,17 @@ namespace Project
         }
         public ArrayList FillTheProfile(ArrayList applicantProfile)
         {
+            string sex = Bot.AskSex();
+            int child = Bot.AskAboutChild();
+            Bot.InsertIntoProfile(applicantProfile, sex, child);
+            return applicantProfile;
+        }
+        public Passport GivePassport(Applicant applicant)
+        {
             string passportID = Bot.AskPassportID();
             DateTime issue = Bot.AskPassportIssueDate();
-            Passport passport = new Passport((string)SearchInProfile(applicantProfile, ApplicantName), (string)SearchInProfile(applicantProfile, ApplicantSurname), (DateTime)SearchInProfile(applicantProfile, ApplicantDateOfBirth), passportID, issue);
-            Bot.InsertIntoProfile(applicantProfile, passportID, issue);
-            return applicantProfile;
+            Passport passport = new Passport(applicant.ApplicantName, applicant.ApplicantSurname, applicant.ApplicantDateOfBirth, passportID, issue);
+            return passport;
         }
         #endregion
     }

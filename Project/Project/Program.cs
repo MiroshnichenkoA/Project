@@ -53,7 +53,12 @@ namespace Project
             #endregion
 
             #region Bot fills in full applicant's profile
+            Passport passport = applicant.GivePassport(applicant);
+            Bot.InsertIntoProfile(applicantProfile, passport.ID, passport.DateOfIssue, passport.DateOfExpiry);
             applicantProfile = applicant.FillTheProfile(applicantProfile);
+            Console.WriteLine(Bot.ProfileIsFilled, applicant.ApplicantName);
+            if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber(applicant);
+            //TODO подписка на смс
             #endregion
         }
     }
