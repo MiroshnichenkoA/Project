@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Project
 {
-    sealed class Bot
+    abstract class Bot
     {
         #region Fields
         private static readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
@@ -44,7 +44,7 @@ namespace Project
         #endregion
 
         #region Helpping Methods
-        private ScriptForTimeOfDay WhatTimeOfDayIsItNow()
+        private static ScriptForTimeOfDay WhatTimeOfDayIsItNow()
         {
             ScriptForTimeOfDay result;
             if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.morning && DateTime.Now.Hour < (int)ScriptForTimeOfDay.day) result = ScriptForTimeOfDay.morning;
@@ -53,7 +53,7 @@ namespace Project
             else result = ScriptForTimeOfDay.night;
             return result;
         }
-        private string ValidUserAnswer(string userAnswer)
+        private static string ValidUserAnswer(string userAnswer)
         {
             while ((userAnswer != Constants.yesString) && (userAnswer != Constants.noString))
             {
@@ -63,7 +63,7 @@ namespace Project
             }
             return userAnswer;
         }
-        private string[] ValidUserAnswer(string[] userAnswer)
+        private static string[] ValidUserAnswer(string[] userAnswer)
         {
             while (userAnswer.Length != Constants.numOfWordsInFullName)
             {
@@ -74,7 +74,7 @@ namespace Project
             }
             return userAnswer;
         }
-        private (string, string) CorrectPositionsOfNameAndSurname((string, string) fullName)
+        private static (string, string) CorrectPositionsOfNameAndSurname((string, string) fullName)
         {
             Console.WriteLine(String.Format(_askWhereIsTheName, fullName.Item1));
             int namePosition = GetUserSimpleAnswer();
@@ -127,12 +127,12 @@ namespace Project
             }
             return userInput;
         }
-        private void Goodbye()
+        private static void Goodbye()
         {
             Console.WriteLine(_goodbye);
             //TODO: shut down
         }
-        private DateTime CheckedBirhday(DateTime dateOfBirth)
+        private static DateTime CheckedBirhday(DateTime dateOfBirth)
         {
             while (dateOfBirth > DateTime.Now)
             {
@@ -143,7 +143,7 @@ namespace Project
             }
             return dateOfBirth;
         }
-        private ArrayList CreateListIfLoans()
+        private static ArrayList CreateListIfLoans()
         {
             ArrayList collectionOfLoans = new ArrayList();
             collectionOfLoans.Add(LoanName.car);
@@ -152,7 +152,7 @@ namespace Project
             collectionOfLoans.Add(LoanName.overdraft);
             return collectionOfLoans;
         }
-        public void ShowConditions()
+        public static void ShowConditions()
         {
             (LoanName, int, double, string, double, double)[] conditions = { CarLoan.Conditions(), EstateLoan.Conditions(), ConsumeLoan.Conditions(), Overdraft.Conditions() };
             foreach ((LoanName, int, double, string, double, double) i in conditions)
@@ -160,12 +160,12 @@ namespace Project
                 Console.WriteLine(_loanConditionsReadFormat, i.Item1, i.Item2, i.Item3, i.Item4, i.Item5, i.Item6);
             }
         }
-        public (LoanName, double) ShowConditions(dynamic loan)
+        public static (LoanName, double) ShowConditions(dynamic loan)
         {
             (LoanName, double) conditions = loan.ThisConditions();
             return conditions;
         }
-        private double AskUnderwritter(double income, dynamic loan)
+        private static double AskUnderwritter(double income, dynamic loan)
         {
             (double, int) conditions = loan.ThisConditionsForUnderwriter();
             double estimateSum = Underwriter.Underwriter.EstimateSum(income, conditions);
@@ -175,15 +175,21 @@ namespace Project
             else Console.WriteLine("Smth goes wrong!!!");
             return estimateSum;
         }
+        private static object SearchInProfile(ArrayList profile, object info)
+        {
+            int index = profile.IndexOf(info);
+            object searched = profile[index];
+            return searched;
+        }
         #endregion
 
         #region Main Methods to get users Info
-        public void Greet()
+        public static void Greet()
         {
             ScriptForTimeOfDay currentTimeGreetingScript = WhatTimeOfDayIsItNow();
             Console.WriteLine(_greetingMessage, currentTimeGreetingScript, Constants.botName, Constants.nameOfproduct);
         }
-        public int GetUserSimpleAnswer()
+        public static int GetUserSimpleAnswer()
         {
             string userAnswer = Console.ReadLine().ToUpper();
             userAnswer = ValidUserAnswer(userAnswer);
@@ -193,7 +199,7 @@ namespace Project
             else result = (int)SimpleAnswers.NO;
             return result;
         }
-        public void AskForIntroducing(int userInterested)
+        public static void AskForIntroducing(int userInterested)
         {
             if (userInterested == (int)SimpleAnswers.NO)
             {
@@ -205,22 +211,22 @@ namespace Project
                 Console.WriteLine(_askForIntroducing);
             }
         }
-        public void InsertIntoProfile(ArrayList profile, object info)
+        public static void InsertIntoProfile(ArrayList profile, object info)
         {
             profile.Add(info);
         }
-        public void InsertIntoProfile(ArrayList profile, object info1, object info2)
+        public static void InsertIntoProfile(ArrayList profile, object info1, object info2)
         {
             profile.Add(info1);
             profile.Add(info2);
         }
-        public void InsertIntoProfile(ArrayList profile, object info1, object info2, object info3)
+        public static void InsertIntoProfile(ArrayList profile, object info1, object info2, object info3)
         {
             profile.Add(info1);
             profile.Add(info2);
             profile.Add(info3);
         }
-        public void DeleteFromProfile(ArrayList profile, object info1, object info2, object info3)
+        public static void DeleteFromProfile(ArrayList profile, object info1, object info2, object info3)
         {
             bool searched = profile.Contains(info1);
             if (searched) profile.Remove(info1);
@@ -229,7 +235,7 @@ namespace Project
             searched = profile.Contains(info3);
             if (searched) profile.Remove(info3);
         }
-        public (string, string) GetApplicantFullName()
+        public static (string, string) GetApplicantFullName()
         {
             string userInput = Console.ReadLine();
             string[] splittedUserInput = userInput.Split(" ");
@@ -238,7 +244,7 @@ namespace Project
             (string, string) correctFullName = CorrectPositionsOfNameAndSurname(fullName);
             return correctFullName;
         }
-        public DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
+        public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
         {
             Console.WriteLine(_askToProvideBirthday, applicantFullName.Item1);
             string userInput = Console.ReadLine();
@@ -247,7 +253,7 @@ namespace Project
             dateOfBitrh = CheckedBirhday(dateOfBitrh);
             return dateOfBitrh;
         }
-        public void CheckIfApplicantIsAdult(Applicant applicant)
+        public static void CheckIfApplicantIsAdult(Applicant applicant)
         {
             DateTime dateApplicantGetAdult = applicant.WhenApplicantGotAdult();
             if (DateTime.Now < dateApplicantGetAdult)
@@ -256,7 +262,7 @@ namespace Project
                 Goodbye();
             }
         }
-        public double GetApplicantIncome(Applicant applicant)
+        public static double GetApplicantIncome(Applicant applicant)
         {
             Console.WriteLine(_askAboutIncome, applicant.ApplicantName);
             string userInput = Console.ReadLine();
@@ -267,7 +273,7 @@ namespace Project
         #endregion
 
         #region Methods to work with loans
-        public void ShowTheListOfLoans(Applicant applicant)
+        public static void ShowTheListOfLoans(Applicant applicant)
         {
             ArrayList collectionOfLoans = CreateListIfLoans();
             Console.WriteLine(_introduceLoans, applicant.ApplicantName, collectionOfLoans.Capacity);
@@ -282,12 +288,12 @@ namespace Project
                 ShowConditions();
             }
         }
-        public void AskToChooseCreditType()
+        public static void AskToChooseCreditType()
         {
             Console.WriteLine(_askToChooseCredit);
             Console.WriteLine($"{(int)LoanName.car} - {LoanName.car}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.estate} - {LoanName.estate}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
         }
-        public dynamic CreateALoanType(int loan)
+        public static dynamic CreateALoanType(int loan)
         {
             dynamic defaultLoan = new ConsumeLoan();
             switch (loan)
@@ -311,14 +317,14 @@ namespace Project
             }
             return defaultLoan;
         }
-        public double EstimateCreditSum(double income, dynamic loan)
+        public static double EstimateCreditSum(double income, dynamic loan)
         {
             double estimateSum = AskUnderwritter(income, loan);
             if (estimateSum > 0) Console.WriteLine(_estimateLoan, estimateSum, loan.Name);
             else Console.WriteLine(_chooseAnotherLoan, loan.Name);
             return estimateSum;
         }
-        public int AskIfApplicantWantOtherLoan(Applicant applicant, double estimateSum)
+        public static int AskIfApplicantWantOtherLoan(Applicant applicant, double estimateSum)
         {
             Console.WriteLine(_askWhetherToChangeLoan, applicant.ApplicantName);
             int decision = GetUserSimpleAnswer();
@@ -333,7 +339,7 @@ namespace Project
             }
             return decision;
         }
-        public void IfToContinue()
+        public static void IfToContinue()
         {
             Console.WriteLine(_ifToContinue);
             int answer = GetUserSimpleAnswer();

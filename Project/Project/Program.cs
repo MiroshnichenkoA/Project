@@ -10,47 +10,45 @@ namespace Project
     {
         static void Main(string[] args)
         {
-            Bot bot = new Bot();
             #region Bot greets user and asks wheather user wants to get a loan
-            bot.Greet();
-            int userInterested = bot.GetUserSimpleAnswer();
+            Bot.Greet();
+            int userInterested = Bot.GetUserSimpleAnswer();
             //TODO: logg
             #endregion
 
             #region Bot gets user information to create new Applicant
-            bot.AskForIntroducing(userInterested);
-            (string, string) applicantFullName = bot.GetApplicantFullName();
-            ArrayList applicantProfile = new ArrayList();
-            bot.InsertIntoProfile(applicantProfile, applicantFullName);
-            DateTime applicantBirthday = bot.GetApplicantDateOfBirth(applicantFullName);
-            bot.InsertIntoProfile(applicantProfile, applicantBirthday);
+            Bot.AskForIntroducing(userInterested);
+            (string, string) applicantFullName = Bot.GetApplicantFullName();
+            DateTime applicantBirthday = Bot.GetApplicantDateOfBirth(applicantFullName);
             Applicant applicant = new Applicant(applicantFullName.Item2, applicantFullName.Item1, applicantBirthday);
-            bot.CheckIfApplicantIsAdult(applicant);
+            Bot.CheckIfApplicantIsAdult(applicant);
+            ArrayList applicantProfile = new ArrayList();
+            Bot.InsertIntoProfile(applicantProfile, applicant.ApplicantName, applicant.ApplicantSurname, applicant.ApplicantDateOfBirth);
             //TODO: logg
             #endregion
 
             #region Bot makes a loan proposal for the applicant
-            bot.ShowTheListOfLoans(applicant);
-            bot.AskToChooseCreditType();
+            Bot.ShowTheListOfLoans(applicant);
+            Bot.AskToChooseCreditType();
             int choosedLoan = applicant.ChooseCreditType();
-            dynamic loan = bot.CreateALoanType(choosedLoan);
-            bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
-            double applicantIncome = bot.GetApplicantIncome(applicant);
-            bot.InsertIntoProfile(applicantProfile, applicantIncome);
-            double estimateSum = bot.EstimateCreditSum(applicantIncome, loan);
-            int applicantWantsAnotherLoan = bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
+            dynamic loan = Bot.CreateALoanType(choosedLoan);
+            Bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
+            double applicantIncome = Bot.GetApplicantIncome(applicant);
+            Bot.InsertIntoProfile(applicantProfile, applicantIncome);
+            double estimateSum = Bot.EstimateCreditSum(applicantIncome, loan);
+            int applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
             while (applicantWantsAnotherLoan != (int)SimpleAnswers.AGREE)
             {
-                bot.DeleteFromProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
-                bot.ShowTheListOfLoans(applicant);
-                bot.AskToChooseCreditType();
+                Bot.DeleteFromProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
+                Bot.ShowTheListOfLoans(applicant);
+                Bot.AskToChooseCreditType();
                 choosedLoan = applicant.ChooseCreditType();
-                loan = bot.CreateALoanType(choosedLoan);
-                bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
-                estimateSum = bot.EstimateCreditSum(applicantIncome, loan);
-                applicantWantsAnotherLoan = bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
+                loan = Bot.CreateALoanType(choosedLoan);
+                Bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
+                estimateSum = Bot.EstimateCreditSum(applicantIncome, loan);
+                applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
             }
-            bot.IfToContinue();
+            Bot.IfToContinue();
             // TODO: logg
             #endregion
 

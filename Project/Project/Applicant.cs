@@ -49,6 +49,12 @@ namespace Project
             }
             return choise;
         }
+        private object SearchInProfile(ArrayList profile, object info)
+        {
+            int index = profile.IndexOf(info);
+            object searched = profile[index];
+            return searched;
+        }
         #endregion
 
         #region Main Methods
@@ -66,8 +72,13 @@ namespace Project
             return choiseChecked;
         }
         public ArrayList FillTheProfile(ArrayList applicantProfile)
-        { 
-
+        {
+            string name = (string)SearchInProfile(applicantProfile, ApplicantName);
+            string surname = (string)SearchInProfile(applicantProfile, ApplicantSurname);
+            DateTime birthday = (DateTime)SearchInProfile(applicantProfile, ApplicantDateOfBirth);
+            string passportID = Bot.AskPassportID();
+            DateTime issue = Bot.AskPassportIssueDate();
+            return applicantProfile;
         }
         #endregion
     }
