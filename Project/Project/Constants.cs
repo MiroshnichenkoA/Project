@@ -16,15 +16,33 @@ namespace Project
         public const string botName = "Samantha";
         public const string nameOfproduct = "loans";
 
+        #region Interest Rates
         public const double interestRateCar = 0.0368;
         public const double interestRateEstate = 0.1318;
         public const double interestRateConsume = 0.1318;
         public const double interestRateOverdraft = 0.1268;
+        #endregion
 
+        #region Min Credit Sum
+        public const double minCreditSumCar = 500.00;
+        public const double minCreditSumEstate = 5000.00;
+        public const double minCreditSumConsume = 50.00;
+        public const double minCreditSumOverdraft = 50.00;
+        #endregion
+
+        #region Max Credit Sum
+        public const double maxCreditSumCar = 20000.00;
+        public const double maxCreditSumEstate = 150000.00;
+        public const double maxCreditSumConsume = 30000.00;
+        public const double maxCreditSumOverdraft = 50000.00;
+        #endregion
+
+        #region Credit Purpose
         public const string purposeCar = "for car purchasing only. You can choose any car you want: a new one from a car dealership or a used one.";
         public const string purposeConsume = "for any purchases you want. Our Corporation will not control the purpose of your lending. Also, you will get all the credit amount at once.";
         public const string purposeEstate = "for purchasing houses and appartments only.";
         public const string purposeOverdraft = "for any purchases you want. Our Corporation will not control the purpose of your lending. We will give you a credit card and you can lent as many, as you need rigth in the moment.";
+        #endregion
         #endregion
 
         #region ConstantsNotForChange

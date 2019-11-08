@@ -6,10 +6,12 @@ namespace Project
 {
     class CarLoan : Loan
     {
-       private static readonly LoanName _name = LoanName.car;
-       private static readonly string _purpose = Constants.purposeCar;
-       private static readonly double _interestRate = Constants.interestRateCar;
-       private static readonly int _maxTermForLoan = (int) MaxTermForLoan.car;
+        private static readonly LoanName _name = LoanName.car;
+        private static readonly string _purpose = Constants.purposeCar;
+        private static readonly double _interestRate = Constants.interestRateCar;
+        private static readonly int _maxTermForLoan = (int) MaxTermForLoan.car;
+        private static readonly double _minSum = Constants.minCreditSumCar;
+        private static readonly double _maxSum = Constants.maxCreditSumCar;
 
         #region Properties
         public DateTime IssueTime { get { return _issueTime; } }
@@ -29,10 +31,25 @@ namespace Project
             _creditAmount = creditAmount;
         }
         #endregion
-        public static (LoanName, int, double, string) Conditions()
+        public double InterestRate { get { return _interestRate; } }
+        public LoanName Name { get { return _name; } }
+        public double MinSum { get { return _minSum; } }
+        public double MaxSum { get { return _maxSum; } }
+
+        public static (LoanName, int, double, string, double, double) Conditions()
         {
-            (LoanName, int, double, string) conditions;
-            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose);
+            (LoanName, int, double, string, double, double) conditions;
+            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose, _minSum, _maxSum);
+        }
+        public (LoanName, double) ThisConditions()
+        {
+            (LoanName, double) conditions = (_name, _interestRate);
+            return conditions;
+        }
+        public (double, int) ThisConditionsForUnderwriter()
+        {
+            (double, int) conditions = (_interestRate, _maxTermForLoan);
+            return conditions;
         }
     }
 }

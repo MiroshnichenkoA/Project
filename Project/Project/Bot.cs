@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Project
         #region Fields
         private static readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
         private static readonly string _sorryMessage = "- Sorry. Can't understand you!";
-        private static readonly string _askAgainForInvalidAnswer = " Please, insert \"{0}\" and/or \"{1}\" only";
+        private static readonly string _askAgainForInvalidAnswer = " Please, insert {0} and/or {1} only";
         private static readonly string _goodbye = "- Goodbye! We are hope to see you soon!";
         private static readonly string _glad = "- Glad to hear this!";
         private static readonly string _askForIntroducing = "- Please, introduce yourself. Tell me your name and surname";
@@ -22,11 +23,16 @@ namespace Project
         private static readonly string _incorrectDateOfBirth = "The date {0} you provide is more then current date {1}. \n Are you sure it's your birthday? \n Please, enter the date again:";
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
         private static readonly string _introduceLoansCondition = "Shall I show you the loans conditions?";
-        private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. \n Aim: {3}";
+        private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. You can be provided from {4} BYN to {5} BYN. \n Aim: {3}";
         private static readonly string _askToChooseCredit = "\n- Choose the type of credit you need. Press the number you need.";
         private static readonly string _askAboutIncome = "- {0}, you have to insert your estimated income. \nI'll use this information to calculate the estimate amount of credit we can propose to you. \nAlso I'll put this information in your profile.";
+        private static readonly string _chooseAnotherLoan = "- Sorry, you do not have enough income for {0} loan.";
+        private static readonly string _estimateLoan = "- We can provide you about {0} BYN if you'll take {1} credit.";
+        private static readonly string _askWhetherToChangeLoan = "- {0}, do you want to choose another loan product?";
+        private static readonly string _ifToContinue = "- So do you want to take a loan?";
+        private static readonly string _continueToInsertProfile = "- Perfect. In that case let's fill out your profile";
         #endregion
-            
+
         public static string SorryMessage { get { return _sorryMessage; } }
         public static string AskToChooseCredit { get { return _askToChooseCredit; } }
 
@@ -137,6 +143,38 @@ namespace Project
             }
             return dateOfBirth;
         }
+        private ArrayList CreateListIfLoans()
+        {
+            ArrayList collectionOfLoans = new ArrayList();
+            collectionOfLoans.Add(LoanName.car);
+            collectionOfLoans.Add(LoanName.consumer);
+            collectionOfLoans.Add(LoanName.estate);
+            collectionOfLoans.Add(LoanName.overdraft);
+            return collectionOfLoans;
+        }
+        public void ShowConditions()
+        {
+            (LoanName, int, double, string, double, double)[] conditions = { CarLoan.Conditions(), EstateLoan.Conditions(), ConsumeLoan.Conditions(), Overdraft.Conditions() };
+            foreach ((LoanName, int, double, string, double, double) i in conditions)
+            {
+                Console.WriteLine(_loanConditionsReadFormat, i.Item1, i.Item2, i.Item3, i.Item4, i.Item5, i.Item6);
+            }
+        }
+        public (LoanName, double) ShowConditions(dynamic loan)
+        {
+            (LoanName, double) conditions = loan.ThisConditions();
+            return conditions;
+        }
+        private double AskUnderwritter(double income, dynamic loan)
+        {
+            (double, int) conditions = loan.ThisConditionsForUnderwriter();
+            double estimateSum = Underwriter.Underwriter.EstimateSum(income, conditions);
+            if (estimateSum >= loan.MaxSum) estimateSum = loan.MaxSum;
+            else if (estimateSum < loan.MinSum) estimateSum = 0;
+            else if (estimateSum >= loan.MinSum && estimateSum < loan.MaxSum) estimateSum = estimateSum;
+            else Console.WriteLine("Smth goes wrong!!!");
+            return estimateSum;
+        }
         #endregion
 
         #region Main Methods to get users Info
@@ -166,6 +204,30 @@ namespace Project
                 Console.WriteLine(_glad);
                 Console.WriteLine(_askForIntroducing);
             }
+        }
+        public void InsertIntoProfile(ArrayList profile, object info)
+        {
+            profile.Add(info);
+        }
+        public void InsertIntoProfile(ArrayList profile, object info1, object info2)
+        {
+            profile.Add(info1);
+            profile.Add(info2);
+        }
+        public void InsertIntoProfile(ArrayList profile, object info1, object info2, object info3)
+        {
+            profile.Add(info1);
+            profile.Add(info2);
+            profile.Add(info3);
+        }
+        public void DeleteFromProfile(ArrayList profile, object info1, object info2, object info3)
+        {
+            bool searched = profile.Contains(info1);
+            if (searched) profile.Remove(info1);
+            searched = profile.Contains(info2);
+            if (searched) profile.Remove(info2);
+            searched = profile.Contains(info3);
+            if (searched) profile.Remove(info3);
         }
         public (string, string) GetApplicantFullName()
         {
@@ -207,8 +269,9 @@ namespace Project
         #region Methods to work with loans
         public void ShowTheListOfLoans(Applicant applicant)
         {
-            Console.WriteLine(_introduceLoans, applicant.ApplicantName, Loan.CollectionOfLoansThatCanBeProvided.Capacity);
-            foreach (LoanName loan in Loan.CollectionOfLoansThatCanBeProvided)
+            ArrayList collectionOfLoans = CreateListIfLoans();
+            Console.WriteLine(_introduceLoans, applicant.ApplicantName, collectionOfLoans.Capacity);
+            foreach (LoanName loan in collectionOfLoans)
             {
                 Console.WriteLine(loan);
             }
@@ -216,11 +279,7 @@ namespace Project
             int userAnswer = GetUserSimpleAnswer();
             if (userAnswer == (int)SimpleAnswers.YES)
             {
-                (LoanName, int, double, string)[] conditions = { CarLoan.Conditions(), EstateLoan.Conditions(), ConsumeLoan.Conditions(), Overdraft.Conditions() };
-                foreach ((LoanName, int, double, string) i in conditions)
-                {
-                    Console.WriteLine(_loanConditionsReadFormat, i.Item1, i.Item2, i.Item3, i.Item4);
-                }
+                ShowConditions();
             }
         }
         public void AskToChooseCreditType()
@@ -230,26 +289,56 @@ namespace Project
         }
         public dynamic CreateALoanType(int loan)
         {
-            Loan defaultLoan = new Loan();
+            dynamic defaultLoan = new ConsumeLoan();
             switch (loan)
             {
-                case ((int)LoanName.car): defaultLoan = new CarLoan();
+                case ((int)LoanName.car): 
+                    defaultLoan = new CarLoan();
                     break;
-                case ((int)LoanName.consumer): defaultLoan = new ConsumeLoan();
+                case ((int)LoanName.consumer): 
+                    defaultLoan = new ConsumeLoan();
                     break;
-                case ((int)LoanName.estate): defaultLoan = new EstateLoan();
+                case ((int)LoanName.estate): 
+                    defaultLoan = new EstateLoan();
                     break;
-                case ((int)LoanName.overdraft): defaultLoan = new Overdraft(); 
+                case ((int)LoanName.overdraft): 
+                    defaultLoan = new Overdraft(); 
                     break;
-                default: Console.WriteLine("Ups. Smth goes wrong!!!");
+                default: 
+                    Console.WriteLine("Ups. Smth goes wrong!!!");
+                    defaultLoan = null;
                     break;
             }
             return defaultLoan;
         }
         public double EstimateCreditSum(double income, dynamic loan)
         {
-            double estimateSum = Underwriter.Underwriter.EstimateSum(income);
+            double estimateSum = AskUnderwritter(income, loan);
+            if (estimateSum > 0) Console.WriteLine(_estimateLoan, estimateSum, loan.Name);
+            else Console.WriteLine(_chooseAnotherLoan, loan.Name);
             return estimateSum;
+        }
+        public int AskIfApplicantWantOtherLoan(Applicant applicant, double estimateSum)
+        {
+            Console.WriteLine(_askWhetherToChangeLoan, applicant.ApplicantName);
+            int decision = GetUserSimpleAnswer();
+            switch (decision)
+            {
+                case (int)SimpleAnswers.NO:
+                    if (estimateSum == 0) Goodbye();
+                    else decision = (int)SimpleAnswers.AGREE; 
+                    break;
+                case (int)SimpleAnswers.YES:
+                    break;
+            }
+            return decision;
+        }
+        public void IfToContinue()
+        {
+            Console.WriteLine(_ifToContinue);
+            int answer = GetUserSimpleAnswer();
+            if (answer == (int)SimpleAnswers.NO) Goodbye();
+            else Console.WriteLine(_continueToInsertProfile);
         }
         #endregion
     }

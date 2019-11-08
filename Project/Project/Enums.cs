@@ -7,7 +7,8 @@ namespace Project
     public enum SimpleAnswers
     {
         YES = 1,
-        NO = 2
+        NO = 2,
+        AGREE = 3
     }
     public enum ScriptForTimeOfDay
     {
@@ -31,3 +32,4 @@ namespace Project
         overdraft = 12
     }
 }
+

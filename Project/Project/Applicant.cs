@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -63,6 +64,10 @@ namespace Project
             int choiseChecked = Int32.Parse(choise);
             choiseChecked = DoesThisLoanNumExist(choiseChecked);
             return choiseChecked;
+        }
+        public ArrayList FillTheProfile(ArrayList applicantProfile)
+        { 
+
         }
         #endregion
     }

@@ -4,17 +4,21 @@ namespace Underwriter
 {
     public static class Underwriter
     {
-        public static double EstimateSum(double income)
+        static void Main()
         {
-            double estimateSum = EstimateSumPrivate(income);
+        }
+        public static double EstimateSum(double income, (double, int) conditions)
+        {
+            double estimateSum = CreditPosibility(income);
+            estimateSum = estimateSum / (1 + conditions.Item1);
+            estimateSum = estimateSum * conditions.Item2;
             return estimateSum;
         }
 
-        private static double EstimateSumPrivate(double income)
+        private static double CreditPosibility(double income)
         {
             double estimatePaymontPerMonth = income * Constants.creditPossibilityRatio;
-            double estimateCreditSum = estimatePaymontPerMonth + estimatePaymontPerMonth;
-            return estimateCreditSum;
+            return estimatePaymontPerMonth;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Project
 {
-    public class Loan
+    public abstract class Loan
     {
         #region Fields
         protected static LoanName _name;
@@ -17,9 +17,26 @@ namespace Project
         protected double _creditAmount;
         protected double _paymontPerMonth;
         protected double _currentBalance;
-        protected static List<LoanName> _collectionOfLoansThatCanBeProvided = new List<LoanName> { LoanName.car, LoanName.consumer, LoanName.estate, LoanName.overdraft };
+        protected static double _minSum;
+        protected static double _maxSum;
         #endregion
+        public static double InterestRate { get { return _interestRate; } }
+        public static LoanName Name { get { return _name; } }
 
-        public static List<LoanName> CollectionOfLoansThatCanBeProvided { get { return _collectionOfLoansThatCanBeProvided; } }
+        public static (LoanName, int, double, string, double, double) Conditions()
+        {
+            (LoanName, int, double, string, double, double) conditions;
+            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose, _minSum, _maxSum);
+        }
+        public (LoanName, double) ThisConditions()
+        {
+            (LoanName, double) conditions = (_name, _interestRate);
+            return conditions;
+        }
+        public (double, int) ThisConditionsForUnderwriter()
+        {
+            (double, int) conditions = (_interestRate, _maxTermForLoan);
+            return conditions;
+        }
     }
 }

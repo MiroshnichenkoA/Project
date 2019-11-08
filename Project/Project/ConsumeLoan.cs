@@ -10,7 +10,8 @@ namespace Project
         private static readonly string _purpose = Constants.purposeConsume;
         private static readonly double _interestRate = Constants.interestRateConsume;
         private static readonly int _maxTermForLoan = (int)MaxTermForLoan.consumer;
-
+        private static readonly double _minSum = Constants.minCreditSumConsume;
+        private static readonly double _maxSum = Constants.maxCreditSumConsume;
         #region Properties
         public DateTime IssueTime { get { return _issueTime; } }
         public DateTime ExperianTime { get { return _experianTime; } }
@@ -29,10 +30,25 @@ namespace Project
             _creditAmount = creditAmount;
         }
         #endregion
-        public static (LoanName, int, double, string) Conditions()
+        public double InterestRate { get { return _interestRate; } }
+        public LoanName Name { get { return _name; } }
+        public double MinSum { get { return _minSum; } }
+        public double MaxSum { get { return _maxSum; } }
+
+        public static (LoanName, int, double, string, double, double) Conditions()
         {
-            (LoanName, int, double, string) conditions;
-            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose);
+            (LoanName, int, double, string, double, double) conditions;
+            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose, _minSum, _maxSum);
+        }
+        public (LoanName, double) ThisConditions()
+        {
+            (LoanName, double) conditions = (_name, _interestRate);
+            return conditions;
+        }
+        public (double, int) ThisConditionsForUnderwriter()
+        {
+            (double, int) conditions = (_interestRate, _maxTermForLoan);
+            return conditions;
         }
     }
 }
