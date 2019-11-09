@@ -45,11 +45,11 @@ namespace Project
         #region Help Methods
         private int DoesThisLoanNumExist(int choise)
         {
-            while (choise != (int)LoanName.car && choise != (int)LoanName.consumer && choise != (int)LoanName.estate && choise != (int)LoanName.overdraft)
+            while (choise != (int)LoanName.auto && choise != (int)LoanName.consumer && choise != (int)LoanName.mortgage && choise != (int)LoanName.overdraft)
             {
                 Console.WriteLine(Bot.SorryMessage);
                 Console.WriteLine(Bot.AskToChooseCredit);
-                Console.WriteLine($"{(int)LoanName.car} - {LoanName.car}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.estate} - {LoanName.estate}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
+                Console.WriteLine($"{(int)LoanName.auto} - {LoanName.auto}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.mortgage} - {LoanName.mortgage}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
                 string inputAgain = Console.ReadLine();
                 inputAgain = Bot.TryParseToInt(inputAgain);
                 choise = Int32.Parse(inputAgain);

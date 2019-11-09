@@ -49,6 +49,8 @@ namespace Project
         }
         #endregion
 
+
+
         #region Helpping Methods
         private static ScriptForTimeOfDay WhatTimeOfDayIsItNow()
         {
@@ -152,9 +154,9 @@ namespace Project
         private static ArrayList CreateListIfLoans()
         {
             ArrayList collectionOfLoans = new ArrayList();
-            collectionOfLoans.Add(LoanName.car);
+            collectionOfLoans.Add(LoanName.auto);
             collectionOfLoans.Add(LoanName.consumer);
-            collectionOfLoans.Add(LoanName.estate);
+            collectionOfLoans.Add(LoanName.mortgage);
             collectionOfLoans.Add(LoanName.overdraft);
             return collectionOfLoans;
         }
@@ -270,9 +272,11 @@ namespace Project
         {
             string userInput = Console.ReadLine();
             string[] splittedUserInput = userInput.Split(" ");
-            splittedUserInput = ValidUserAnswer(splittedUserInput);
-            (string, string) fullName = (splittedUserInput[0], splittedUserInput[1]);
-            return CorrectPositionsOfNameAndSurname(fullName);
+            do
+            {
+                splittedUserInput = ValidUserAnswer(splittedUserInput);
+            } while (String.IsNullOrWhiteSpace(splittedUserInput[0]) && String.IsNullOrWhiteSpace(splittedUserInput[1]));        
+            return CorrectPositionsOfNameAndSurname((splittedUserInput[0], splittedUserInput[1]));
         }
         public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
         {
@@ -394,17 +398,17 @@ namespace Project
         public static void AskToChooseCreditType()
         {
             Console.WriteLine(_askToChooseCredit);
-            Console.WriteLine($"{(int)LoanName.car} - {LoanName.car}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.estate} - {LoanName.estate}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
+            Console.WriteLine($"{(int)LoanName.auto} - {LoanName.auto}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.mortgage} - {LoanName.mortgage}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
         }
         public static dynamic CreateALoanType(int loan)
         {
             switch (loan)
             {
-                case ((int)LoanName.car):
+                case ((int)LoanName.auto):
                     return new CarLoan();
                 case ((int)LoanName.consumer):
                     return new ConsumeLoan();
-                case ((int)LoanName.estate):
+                case ((int)LoanName.mortgage):
                     return new EstateLoan();
                 case ((int)LoanName.overdraft):
                     return new Overdraft();
@@ -413,9 +417,9 @@ namespace Project
                     return null;
             }
         }
-        public static double EstimateCreditSum(double income, dynamic loan)
+        public static int EstimateCreditSum(double income, dynamic loan)
         {
-            double estimateSum = AskUnderwritter(income, loan);
+            int estimateSum = (int)AskUnderwritter(income, loan);
             if (estimateSum > 0) Console.WriteLine(_estimateLoan, estimateSum, loan.Name);
             else Console.WriteLine(_chooseAnotherLoan, loan.Name);
             return estimateSum;

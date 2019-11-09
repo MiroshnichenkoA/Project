@@ -6,7 +6,7 @@ namespace Project
 {
     class CarLoan : Loan
     {
-        private static readonly LoanName _name = LoanName.car;
+        private static readonly LoanName _name = LoanName.auto;
         private static readonly string _purpose = Constants.purposeCar;
         private static readonly double _interestRate = Constants.interestRateCar;
         private static readonly int _maxTermForLoan = (int) MaxTermForLoan.car;

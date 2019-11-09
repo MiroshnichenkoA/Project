@@ -19,8 +19,8 @@ namespace Project
     }
     public enum LoanName
     {
-        car = 1,
-        estate = 2,
+        auto = 1,
+        mortgage = 2,
         consumer = 3,
         overdraft = 4 
     }
