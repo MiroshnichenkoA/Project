@@ -5,9 +5,9 @@ namespace Underwriter
 {
     public static class Underwriter
     {
-        static void Main()
-        {        
-            // check passport
+        static void Main(ArrayList profile)
+        {
+           bool passportControl = PassportControl.ValidPassport(profile);
             // check other credits
             // calculate sum
         }
