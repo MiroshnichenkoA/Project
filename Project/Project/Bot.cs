@@ -6,16 +6,24 @@ namespace Project
     abstract class Bot
     {
         #region Fields
-        private static readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
-        private static readonly string _sorryMessage = "- Sorry. Can't understand you!";
+
+        #region Sorry Message Format and Cases for Checking User Inputs: Fields
+        private static readonly string _sorryMessage = "- Sorry. Can't understand you! {0}";
+        private static readonly string _insertOnlyDate = "Insert date";
+        private static readonly string _insertOnlyNumber = "Insert number";
+        private static readonly string _phoneNumFormat = "You should insert 9 numbers instead of X in format +375-XX-XXX-XX-XX";
+        //TODO: explain why Sorry
         private static readonly string _askAgainForInvalidAnswer = " Please, insert {0} and/or {1} only";
+        private static readonly string _loansAreOnlyForAdult = "Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
+        private static readonly string _incorrectDate = "The date {0} you provide is more then current date {1}. \n Are you sure it's right date? \n Please, enter the date again:";
+        #endregion
+
+        private static readonly string _greetingMessage = "- Good {0} and welcom to the Humster Bank Corporation. \n My name is {1}. We provide different types of {2} with attractive rates. \n Are you interested in {2}?";
         private static readonly string _goodbye = "- Goodbye! We are hope to see you soon!";
         private static readonly string _glad = "- Glad to hear this!";
         private static readonly string _askForIntroducing = "- Please, introduce yourself. Tell me your name and surname";
         private static readonly string _askWhereIsTheName = "- Is {0} your name?";
-        private static readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";
-        private static readonly string _loansAreOnlyForAdult = "Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
-        private static readonly string _incorrectDate = "The date {0} you provide is more then current date {1}. \n Are you sure it's right date? \n Please, enter the date again:";
+        private static readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";       
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
         private static readonly string _introduceLoansCondition = "Shall I show you the loans conditions?";
         private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. You can be provided from {4} BYN to {5} BYN. \n Aim: {3}";
@@ -63,10 +71,9 @@ namespace Project
         }
         private static string ValidUserAnswer(string userAnswer)
         {
-            while ((userAnswer != Constants.yesString) && (userAnswer != Constants.noString))
+            while ((userAnswer != Constants.yesString) && (userAnswer != Constants.noString) && (userAnswer != Constants.yString) && (userAnswer != Constants.nString))
             {
-                Console.WriteLine(_sorryMessage);
-                Console.WriteLine(String.Format(_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO));
+                Console.WriteLine(SorryMessage, (_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO));
                 userAnswer = Console.ReadLine().ToUpper();
             }
             return userAnswer;
@@ -75,10 +82,8 @@ namespace Project
         {
             while (userAnswer.Length != Constants.numOfWordsInFullName)
             {
-                Console.WriteLine(_sorryMessage);
-                Console.WriteLine(_askAgainForInvalidAnswer, Constants.tellName, Constants.tellSurname);
-                string newInput = Console.ReadLine();
-                userAnswer = newInput.Split(" ");
+                Console.WriteLine(SorryMessage, (_askAgainForInvalidAnswer, Constants.tellName, Constants.tellSurname));
+                userAnswer = Console.ReadLine().Split(" ");
             }
             return userAnswer;
         }
@@ -105,7 +110,7 @@ namespace Project
             bool check = DateTime.TryParse(userInput, out dateOfBitrh);
             while (check == false)
             {
-                Console.WriteLine(_sorryMessage);
+                Console.WriteLine(SorryMessage, _insertOnlyDate);
                 userInput = Console.ReadLine();
                 check = DateTime.TryParse(userInput, out dateOfBitrh);
             }
@@ -117,7 +122,7 @@ namespace Project
             bool check = Int32.TryParse(userInput, out num);
             while (check == false)
             {
-                Console.WriteLine(_sorryMessage);
+                Console.WriteLine(SorryMessage, _insertOnlyNumber);
                 userInput = Console.ReadLine();
                 check = Int32.TryParse(userInput, out num);
             }
@@ -129,7 +134,7 @@ namespace Project
             bool check = Double.TryParse(userInput, out num);
             while (check == false)
             {
-                Console.WriteLine(_sorryMessage);
+                Console.WriteLine(SorryMessage, _insertOnlyNumber);
                 userInput = Console.ReadLine();
                 check = Double.TryParse(userInput, out num);
             }
@@ -185,12 +190,11 @@ namespace Project
         }
         private static T SearchInProfile<T>(ArrayList profile, T info)
         {
-            int index = profile.IndexOf(info);
-            return (T)profile[index];
+            return (T)profile[profile.IndexOf(info)];
         }
         private static bool CheckedID(string userInput)
         {
-            if (userInput.Length == 14) return true;
+            if (userInput.Length == Constants.passportIDLength) return true;
             else return false;
         }
         private static string CheckIsItPhoneNumber(string phoneNumber)
@@ -205,7 +209,7 @@ namespace Project
             //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             while (flag != Constants.startNumberDefenition)
             {
-                Console.WriteLine(_sorryMessage);
+                Console.WriteLine(SorryMessage, _phoneNumFormat);
                 phoneNumber = Console.ReadLine();
                 flag = Constants.startNumberDefenition;
                 if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
@@ -222,14 +226,13 @@ namespace Project
         #region Main Methods to get users Info
         public static void Greet()
         {
-            ScriptForTimeOfDay currentTimeGreetingScript = WhatTimeOfDayIsItNow();
-            Console.WriteLine(_greetingMessage, currentTimeGreetingScript, Constants.botName, Constants.nameOfproduct);
+            Console.WriteLine(_greetingMessage, WhatTimeOfDayIsItNow(), Constants.botName, Constants.nameOfproduct);
         }
         public static int GetUserSimpleAnswer()
         {
             string userAnswer = Console.ReadLine().ToUpper();
             userAnswer = ValidUserAnswer(userAnswer);
-            if (userAnswer == Constants.yesString) return (int)SimpleAnswers.YES;
+            if (userAnswer == Constants.yesString || userAnswer == Constants.yString) return (int)SimpleAnswers.YES;
             else return (int)SimpleAnswers.NO;
         }
         public static void AskForIntroducing(int userInterested)
@@ -247,26 +250,32 @@ namespace Project
         public static void InsertIntoProfile(ArrayList profile, object info)
         {
             profile.Add(info);
+            //TODO: logg
         }
         public static void InsertIntoProfile(ArrayList profile, object info1, object info2)
         {
             profile.Add(info1);
             profile.Add(info2);
+            //TODO: logg
         }
         public static void InsertIntoProfile(ArrayList profile, object info1, object info2, object info3)
         {
             profile.Add(info1);
             profile.Add(info2);
             profile.Add(info3);
+            //TODO: logg
         }
         public static void DeleteFromProfile(ArrayList profile, object info1, object info2, object info3)
         {
             bool searched = profile.Contains(info1);
             if (searched) profile.Remove(info1);
+            //TODO: logg
             searched = profile.Contains(info2);
             if (searched) profile.Remove(info2);
+            //TODO: logg
             searched = profile.Contains(info3);
             if (searched) profile.Remove(info3);
+            //TODO: logg
         }
         public static (string, string) GetApplicantFullName()
         {
@@ -291,7 +300,7 @@ namespace Project
             if (Bot.ValidateApplicantAge(applicant) == false)
             {
                 Console.WriteLine(Bot.LoanAreOnlyForAdult, (applicant.WhenApplicantGotAdult().Year - DateTime.Now.Year));
-                Bot.Goodbye();
+                Goodbye();
             }
         }
         public static bool ValidateApplicantAge(Applicant applicant)
@@ -338,7 +347,7 @@ namespace Project
         {
             Console.WriteLine(_whatIsYourSex);
             string userInput = Console.ReadLine().ToUpper();
-            while (userInput != Constants.male && userInput != Constants.female)
+            while (userInput.StartsWith(Constants.male) && userInput.StartsWith(Constants.female))
             {
                 Console.WriteLine(_askAgainForInvalidAnswer, Constants.male, Constants.female);
                 userInput = Console.ReadLine().ToUpper();

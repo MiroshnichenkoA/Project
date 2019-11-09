@@ -8,6 +8,7 @@ namespace Project
     {
         #region LegalRequirements
         public const byte passportExpirianTerm = 10;
+        public const int passportIDLength = 14;
         public const byte numOfWordsInFullName = 2;
         public const byte adultYears = 18;
         #endregion
@@ -57,6 +58,8 @@ namespace Project
         #endregion
         public const string yesString = "YES";
         public const string noString = "NO";
+        public const string yString = "Y";
+        public const string nString = "N";
         public const string tellName = "your name";
         public const string tellSurname = "your surname";
         public const string male = "M";
