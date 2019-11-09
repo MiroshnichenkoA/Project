@@ -38,8 +38,7 @@ namespace Project
 
         public static (LoanName, int, double, string, double, double) Conditions()
         {
-            (LoanName, int, double, string, double, double) conditions;
-            return conditions = (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose, _minSum, _maxSum);
+            return (_name, _maxTermForLoan / Constants.monthInYear, _interestRate * Constants.toPer, _purpose, _minSum, _maxSum);
         }
         public (LoanName, double) ThisConditions()
         {

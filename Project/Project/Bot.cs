@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Project
 {
@@ -141,7 +136,7 @@ namespace Project
         public static void Goodbye()
         {
             Console.WriteLine(_goodbye);
-            //TODO: shut down
+            Environment.Exit(0);
         }
         private static DateTime CheckedDate(DateTime date)
         {
@@ -177,12 +172,14 @@ namespace Project
         }
         private static double AskUnderwritter(double income, dynamic loan)
         {
-            double estimateSum = Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter());
-            if (estimateSum >= loan.MaxSum) estimateSum = loan.MaxSum;
-            else if (estimateSum < loan.MinSum) estimateSum = 0;
-            else if (estimateSum >= loan.MinSum && estimateSum < loan.MaxSum) estimateSum = estimateSum;
-            else Console.WriteLine("Smth goes wrong!!!");
-            return estimateSum;
+            if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MaxSum) return loan.MaxSum;
+            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return 0;
+            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MinSum && Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MaxSum) return Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter());
+            else
+            {
+                Console.WriteLine("Smth goes wrong!!!");
+                return 0;
+            }
         }
         private static T SearchInProfile<T>(ArrayList profile, T info)
         {
@@ -197,11 +194,11 @@ namespace Project
         private static string CheckIsItPhoneNumber(string phoneNumber)
         {
             int flag = Constants.startNumberDefenition;
-       
+
             if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
             for (int i = 0; i < phoneNumber.Split('-').Length; i++)
             {
-                if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;  
+                if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
             }
             //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             while (flag != Constants.startNumberDefenition)
@@ -293,8 +290,7 @@ namespace Project
                 Bot.Goodbye();
             }
         }
-     
-    public static bool ValidateApplicantAge(Applicant applicant)
+        public static bool ValidateApplicantAge(Applicant applicant)
         {
             Type t = typeof(Applicant);
             object[] fields = t.GetCustomAttributes(true);
@@ -360,7 +356,8 @@ namespace Project
                         answer = Int32.Parse(userInput);
                     }
                     break;
-                case (int)SimpleAnswers.NO: answer = Constants.startNumberDefenition;
+                case (int)SimpleAnswers.NO:
+                    answer = Constants.startNumberDefenition;
                     break;
                 default:
                     Console.WriteLine("Smth goes wrong!!!");
@@ -368,7 +365,7 @@ namespace Project
             }
             return answer;
         }
-        public static string AskPhoneNumber(Applicant applicant)
+        public static string AskPhoneNumber()
         {
             Console.WriteLine(_noPhoneNumber);
             string phoneNumber = Console.ReadLine();
@@ -401,27 +398,20 @@ namespace Project
         }
         public static dynamic CreateALoanType(int loan)
         {
-            dynamic defaultLoan = new ConsumeLoan();
             switch (loan)
             {
-                case ((int)LoanName.car): 
-                    defaultLoan = new CarLoan();
-                    break;
-                case ((int)LoanName.consumer): 
-                    defaultLoan = new ConsumeLoan();
-                    break;
-                case ((int)LoanName.estate): 
-                    defaultLoan = new EstateLoan();
-                    break;
-                case ((int)LoanName.overdraft): 
-                    defaultLoan = new Overdraft(); 
-                    break;
-                default: 
+                case ((int)LoanName.car):
+                    return new CarLoan();
+                case ((int)LoanName.consumer):
+                    return new ConsumeLoan();
+                case ((int)LoanName.estate):
+                    return new EstateLoan();
+                case ((int)LoanName.overdraft):
+                    return new Overdraft();
+                default:
                     Console.WriteLine("Ups. Smth goes wrong!!!");
-                    defaultLoan = null;
-                    break;
+                    return null;
             }
-            return defaultLoan;
         }
         public static double EstimateCreditSum(double income, dynamic loan)
         {
@@ -438,7 +428,7 @@ namespace Project
             {
                 case (int)SimpleAnswers.NO:
                     if (estimateSum == 0) Goodbye();
-                    else decision = (int)SimpleAnswers.AGREE; 
+                    else decision = (int)SimpleAnswers.AGREE;
                     break;
                 case (int)SimpleAnswers.YES:
                     break;

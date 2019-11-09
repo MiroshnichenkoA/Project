@@ -49,6 +49,7 @@ namespace Project
                 applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
             }
             Bot.IfToContinue();
+            //TO DO: how much does applicant actually wants?
             // TODO: logg
             #endregion
 
@@ -57,10 +58,14 @@ namespace Project
             Bot.InsertIntoProfile(applicantProfile, passport.ID, passport.DateOfIssue, passport.DateOfExpiry);
             applicantProfile = applicant.FillTheProfile(applicantProfile);
             Console.WriteLine(Bot.ProfileIsFilled, applicant.ApplicantName);
-            if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber(applicant);
+            if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber();
             Bot.InsertIntoProfile(applicantProfile, applicant.PhoneNumber);
             //TODO Event sms
             // TODO logg
+            #endregion
+
+            #region Underwraiter Calculate Credit Sum For Applicant
+           // double credit = Underwriter.Underwriter.FinalSum(applicantProfile);
             #endregion
 
             #region

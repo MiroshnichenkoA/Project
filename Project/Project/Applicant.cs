@@ -26,7 +26,7 @@ namespace Project
             _applicantSurname = surname;
             _applicantName = name;
             _applicantDateOfBirth = dateOfBirth;
-            _age = _applicantDateOfBirth.Year - DateTime.Now.Year;
+            _age = DateTime.Now.Year - _applicantDateOfBirth.Year;
             _applicantInternalID = indexForApplicantCounting + 1;
             indexForApplicantCounting += 1;
         }
@@ -39,6 +39,7 @@ namespace Project
         public int Age { get { return _age; } }
         public int ApplicantInternalID { get { return _applicantInternalID; } }
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
+        public Passport ApplicantPassport { get { return _applicantPassport; } set { _applicantPassport = value; } }
         #endregion
 
         #region Help Methods
@@ -88,6 +89,7 @@ namespace Project
             string passportID = Bot.AskPassportID();
             DateTime issue = Bot.AskPassportIssueDate();
             Passport passport = new Passport(applicant.ApplicantName, applicant.ApplicantSurname, applicant.ApplicantDateOfBirth, passportID, issue);
+            applicant.ApplicantPassport = passport;
             return passport;
         }
         #endregion

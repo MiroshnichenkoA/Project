@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace Underwriter
 {
@@ -9,15 +10,20 @@ namespace Underwriter
         }
         public static double EstimateSum(double income, (double, int) conditions)
         {
-            double estimateSum = CreditPosibility(income);
-            estimateSum = estimateSum / (1 + conditions.Item1);
-            estimateSum = estimateSum * conditions.Item2;
-            return estimateSum;
+            return CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
+        }
+        public static ArrayList FinalSum(ArrayList profile)
+        {
+            return profile;
         }
         private static double CreditPosibility(double income)
         {
-            double estimatePaymontPerMonth = income * Constants.creditPossibilityRatio;
-            return estimatePaymontPerMonth;
+            return income * Constants.creditPossibilityRatio;
+        }
+        private static T SearchInProfile<T>(ArrayList profile, T info)
+        {
+            int index = profile.IndexOf(info);
+            return (T)profile[index];
         }
     }
 }
