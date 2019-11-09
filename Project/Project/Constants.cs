@@ -63,7 +63,7 @@ namespace Project
         public const string tellName = "your name";
         public const string tellSurname = "your surname";
         public const string male = "M";
-        public const string female = "F";
+        public const string female = "W";
         #endregion
     }
 }

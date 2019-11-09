@@ -12,9 +12,9 @@ namespace Project
         private static readonly string _insertOnlyDate = "Insert date";
         private static readonly string _insertOnlyNumber = "Insert number";
         private static readonly string _phoneNumFormat = "You should insert 9 numbers instead of X in format +375-XX-XXX-XX-XX";
-        //TODO: explain why Sorry
-        private static readonly string _askAgainForInvalidAnswer = " Please, insert {0} and/or {1} only";
-        private static readonly string _loansAreOnlyForAdult = "Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
+        private static readonly string _passportIDFormat = $"You should insert the ID number from your passport. It contains {Constants.passportIDLength} chars. Be careful";
+        private static readonly string _askAgainForInvalidAnswer = "Please, insert {0} {1} only";
+        private static readonly string _loansAreOnlyForAdult = "- Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
         private static readonly string _incorrectDate = "The date {0} you provide is more then current date {1}. \n Are you sure it's right date? \n Please, enter the date again:";
         #endregion
 
@@ -25,19 +25,19 @@ namespace Project
         private static readonly string _askWhereIsTheName = "- Is {0} your name?";
         private static readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";       
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
-        private static readonly string _introduceLoansCondition = "Shall I show you the loans conditions?";
+        private static readonly string _introduceLoansCondition = $"Shall I show you the {Constants.nameOfproduct} conditions?";
         private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. You can be provided from {4} BYN to {5} BYN. \n Aim: {3}";
-        private static readonly string _askToChooseCredit = "\n- Choose the type of credit you need. Press the number you need.";
+        private static readonly string _askToChooseCredit = $"\n- Choose the type of {Constants.nameOfproduct} you need. Press the number you need.";
         private static readonly string _askAboutIncome = "- {0}, you have to insert your estimated income. \nI'll use this information to calculate the estimate amount of credit we can propose to you. \nAlso I'll put this information in your profile.";
         private static readonly string _chooseAnotherLoan = "- Sorry, you do not have enough income for {0} loan.";
         private static readonly string _estimateLoan = "- We can provide you about {0} BYN if you'll take {1} credit.";
         private static readonly string _askWhetherToChangeLoan = "- {0}, do you want to choose another loan product?";
-        private static readonly string _ifToContinue = "- So do you want to take a loan?";
+        private static readonly string _ifToContinue = $"- So do you want to take a {Constants.nameOfproduct}?";
         private static readonly string _continueToInsertProfile = "- Perfect. In that case let's fill out your profile";
         private static readonly string _askToProvidePassportIssue = "- Insert your passport issue date, please.";
         private static readonly string _askToProvidePassportID = "- Insert your passport ID, please.";
-        private static readonly string _whatIsYourSex = "- If you are man, please, enter M, and if you are woman, pleae enter F. Thank you.";
-        private static readonly string _anyChild = $"- Do you have kids under {Constants.adultYears} year's old?";
+        private static readonly string _whatIsYourSex = "- Are you man or woman?";
+        private static readonly string _anyChild = $"- Do you have any kids under {Constants.adultYears} year's old?";
         private static readonly string _howManyChild = "- How many?";
         private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
@@ -48,6 +48,7 @@ namespace Project
         public static string AskToChooseCredit { get { return _askToChooseCredit; } }
         public static string ProfileIsFilled { get { return _profileIsFilled; } }
         public static string LoanAreOnlyForAdult { get { return _loansAreOnlyForAdult; } }
+        public static string InsertOnlyNumber { get { return _insertOnlyNumber; } }
         #endregion
 
         #region Constructor
@@ -73,7 +74,8 @@ namespace Project
         {
             while ((userAnswer != Constants.yesString) && (userAnswer != Constants.noString) && (userAnswer != Constants.yString) && (userAnswer != Constants.nString))
             {
-                Console.WriteLine(SorryMessage, (_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO));
+                string sorryExplain = String.Format(_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO);
+                Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().ToUpper();
             }
             return userAnswer;
@@ -82,14 +84,15 @@ namespace Project
         {
             while (userAnswer.Length != Constants.numOfWordsInFullName)
             {
-                Console.WriteLine(SorryMessage, (_askAgainForInvalidAnswer, Constants.tellName, Constants.tellSurname));
+                string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.tellName, Constants.tellSurname);
+                Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().Split(" ");
             }
             return userAnswer;
         }
         private static (T, T) CorrectPositionsOfNameAndSurname<T>((T, T) fullName)
         {
-            Console.WriteLine(String.Format(_askWhereIsTheName, fullName.Item1));
+            Console.WriteLine(_askWhereIsTheName, fullName.Item1);
             int namePosition = GetUserSimpleAnswer();
             (T, T) correctFullName;
             if (namePosition == (int)SimpleAnswers.YES)
@@ -328,6 +331,7 @@ namespace Project
             string userInput;
             do
             {
+                Console.WriteLine(SorryMessage, _passportIDFormat);
                 Console.WriteLine(_askToProvidePassportID);
                 userInput = Console.ReadLine();
                 check = CheckedID(userInput);
@@ -347,7 +351,7 @@ namespace Project
         {
             Console.WriteLine(_whatIsYourSex);
             string userInput = Console.ReadLine().ToUpper();
-            while (userInput.StartsWith(Constants.male) && userInput.StartsWith(Constants.female))
+            while (userInput.StartsWith(Constants.male) == false && userInput.StartsWith(Constants.female) == false)
             {
                 Console.WriteLine(_askAgainForInvalidAnswer, Constants.male, Constants.female);
                 userInput = Console.ReadLine().ToUpper();

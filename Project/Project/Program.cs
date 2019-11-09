@@ -10,7 +10,7 @@ namespace Project
     {
         static void Main(string[] args)
         {
-            #region Bot greets user and asks wheather user wants to get a loan
+            #region Bot greets user and asks wheather user wants to get a product
             Bot.Greet();
             int userInterested = Bot.GetUserSimpleAnswer();
             //TODO: logg
@@ -27,11 +27,12 @@ namespace Project
             //TODO: logg
             #endregion
 
-            #region Bot makes a loan proposal for the applicant
+            #region Bot makes a product proposal for the applicant
             Bot.ShowTheListOfLoans(applicant);
             Bot.AskToChooseCreditType();
             int choosedLoan = applicant.ChooseCreditType();
             dynamic loan = Bot.CreateALoanType(choosedLoan);
+            //TODO: logg
             Bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
             double applicantIncome = Bot.GetApplicantIncome(applicant);
             Bot.InsertIntoProfile(applicantProfile, applicantIncome);
@@ -55,6 +56,7 @@ namespace Project
 
             #region Bot fills in full applicant's profile
             Passport passport = applicant.GivePassport(applicant);
+            //TODO: logg
             Bot.InsertIntoProfile(applicantProfile, passport.ID, passport.DateOfIssue, passport.DateOfExpiry);
             applicantProfile = applicant.FillTheProfile(applicantProfile);
             Console.WriteLine(Bot.ProfileIsFilled, applicant.ApplicantName);
@@ -64,8 +66,8 @@ namespace Project
             // TODO logg
             #endregion
 
-            #region Underwraiter Calculate Credit Sum For Applicant
-           // double credit = Underwriter.Underwriter.FinalSum(applicantProfile);
+            #region Underwraiter Calculate Credit Sum For Applicant and Do All Needed Checks
+            //Underwriter.Underwriter.Main(applicantProfile);
             #endregion
 
             #region

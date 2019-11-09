@@ -47,7 +47,7 @@ namespace Project
         {
             while (choise != (int)LoanName.auto && choise != (int)LoanName.consumer && choise != (int)LoanName.mortgage && choise != (int)LoanName.overdraft)
             {
-                Console.WriteLine(Bot.SorryMessage);
+                Console.WriteLine(Bot.SorryMessage, Bot.InsertOnlyNumber);
                 Console.WriteLine(Bot.AskToChooseCredit);
                 Console.WriteLine($"{(int)LoanName.auto} - {LoanName.auto}, \n{(int)LoanName.consumer} - {LoanName.consumer}, \n{(int)LoanName.mortgage} - {LoanName.mortgage}, \n{(int)LoanName.overdraft} - {LoanName.overdraft} ");
                 string inputAgain = Console.ReadLine();
@@ -55,12 +55,6 @@ namespace Project
                 choise = Int32.Parse(inputAgain);
             }
             return choise;
-        }
-        private T SearchInProfile<T>(ArrayList profile, T info)
-        {
-            int index = profile.IndexOf(info);
-            T searched = (T)profile[index];
-            return searched;
         }
         #endregion
 
