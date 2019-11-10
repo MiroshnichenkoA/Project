@@ -10,7 +10,7 @@ namespace Project
 
         public AdultAgeAttribute()
         {
-            Age = Constants.adultYears;
+            Age = Constants.AdultYears;
         }
     }
 }

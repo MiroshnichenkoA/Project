@@ -31,5 +31,30 @@ namespace Project
         consumer = 60,
         overdraft = 12
     }
+    public enum Field
+    {
+        Surname = 0,
+        Name = 1,
+        Bitrhday = 2,
+        Age = 3,
+        InternalID = 4,
+        Passport = 5,
+        PhoneNumber = 6,
+        Sex = 7,
+        NumOfChild = 8,
+        Income = 9,
+        ID = 10,
+        Issue = 11,
+        Expiry = 12,
+        Loan = 13,
+        Purpose = 14,
+        Rate = 15,
+        Term = 16,
+        MinSum = 17,
+        MaxSum = 18,
+        Amount = 19,
+        Paymont = 20,
+        Balance = 21
+    }
 }
 

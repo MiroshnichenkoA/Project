@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Project
 {
-    abstract class Bot
+    abstract class Bot : IProfileManager
     {
         #region Fields
 
@@ -12,7 +12,7 @@ namespace Project
         private static readonly string _insertOnlyDate = "Insert date";
         private static readonly string _insertOnlyNumber = "Insert number";
         private static readonly string _phoneNumFormat = "You should insert 9 numbers instead of X in format +375-XX-XXX-XX-XX";
-        private static readonly string _passportIDFormat = $"You should insert the ID number from your passport. It contains {Constants.passportIDLength} chars. Be careful";
+        private static readonly string _passportIDFormat = $"You should insert the ID number from your passport. It contains {Constants.PassportIDLength} chars. Be careful";
         private static readonly string _askAgainForInvalidAnswer = "Please, insert {0} {1} only";
         private static readonly string _loansAreOnlyForAdult = "- Sorry, we don't provide loans for minors. You will become an adult in {0} years. \n See you then!";
         private static readonly string _incorrectDate = "The date {0} you provide is more then current date {1}. \n Are you sure it's right date? \n Please, enter the date again:";
@@ -25,19 +25,19 @@ namespace Project
         private static readonly string _askWhereIsTheName = "- Is {0} your name?";
         private static readonly string _askToProvideBirthday = "- Dear {0}, to continue I need to ask your date of birth. Please, enter the date:";       
         private static readonly string _introduceLoans = "- {0}, at the current moment we can propose you {1} types of loans. They are:";
-        private static readonly string _introduceLoansCondition = $"Shall I show you the {Constants.nameOfproduct} conditions?";
+        private static readonly string _introduceLoansCondition = $"Shall I show you the {Constants.NameOfproduct} conditions?";
         private static readonly string _loanConditionsReadFormat = "\n Credit name: {0}. \n Granted for a period of not more than {1} years at a rate of {2} percent per annum. You can be provided from {4} BYN to {5} BYN. \n Aim: {3}";
-        private static readonly string _askToChooseCredit = $"\n- Choose the type of {Constants.nameOfproduct} you need. Press the number you need.";
+        private static readonly string _askToChooseCredit = $"\n- Choose the type of {Constants.NameOfproduct} you need. Press the number you need.";
         private static readonly string _askAboutIncome = "- {0}, you have to insert your estimated income. \nI'll use this information to calculate the estimate amount of credit we can propose to you. \nAlso I'll put this information in your profile.";
         private static readonly string _chooseAnotherLoan = "- Sorry, you do not have enough income for {0} loan.";
         private static readonly string _estimateLoan = "- We can provide you about {0} BYN if you'll take {1} credit.";
         private static readonly string _askWhetherToChangeLoan = "- {0}, do you want to choose another loan product?";
-        private static readonly string _ifToContinue = $"- So do you want to take a {Constants.nameOfproduct}?";
+        private static readonly string _ifToContinue = $"- So do you want to take a {Constants.NameOfproduct}?";
         private static readonly string _continueToInsertProfile = "- Perfect. In that case let's fill out your profile";
         private static readonly string _askToProvidePassportIssue = "- Insert your passport issue date, please.";
         private static readonly string _askToProvidePassportID = "- Insert your passport ID, please.";
         private static readonly string _whatIsYourSex = "- Are you man or woman?";
-        private static readonly string _anyChild = $"- Do you have any kids under {Constants.adultYears} year's old?";
+        private static readonly string _anyChild = $"- Do you have any kids under {Constants.AdultYears} year's old?";
         private static readonly string _howManyChild = "- How many?";
         private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
@@ -51,15 +51,6 @@ namespace Project
         public static string InsertOnlyNumber { get { return _insertOnlyNumber; } }
         #endregion
 
-        #region Constructor
-        public Bot()
-        {
-            //TODO: logging
-        }
-        #endregion
-
-
-
         #region Helpping Methods
         private static ScriptForTimeOfDay WhatTimeOfDayIsItNow()
         {
@@ -72,7 +63,7 @@ namespace Project
         }
         private static string ValidUserAnswer(string userAnswer)
         {
-            while ((userAnswer != Constants.yesString) && (userAnswer != Constants.noString) && (userAnswer != Constants.yString) && (userAnswer != Constants.nString))
+            while ((userAnswer != Constants.YesString) && (userAnswer != Constants.NoString) && (userAnswer != Constants.YString) && (userAnswer != Constants.NString))
             {
                 string sorryExplain = String.Format(_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO);
                 Console.WriteLine(SorryMessage, sorryExplain);
@@ -82,9 +73,9 @@ namespace Project
         }
         private static string[] ValidUserAnswer(string[] userAnswer)
         {
-            while (userAnswer.Length != Constants.numOfWordsInFullName)
+            while (userAnswer.Length != Constants.NumOfWordsInFullName)
             {
-                string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.tellName, Constants.tellSurname);
+                string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.TellName, Constants.TellSurname);
                 Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().Split(" ");
             }
@@ -191,18 +182,18 @@ namespace Project
                 return 0;
             }
         }
-        private static T SearchInProfile<T>(ArrayList profile, T info)
-        {
-            return (T)profile[profile.IndexOf(info)];
-        }
+        //private static T SearchInProfile<T>(ArrayList profile, T info)
+        //{
+          //  return (T)profile[profile.IndexOf(info)];
+        //}
         private static bool CheckedID(string userInput)
         {
-            if (userInput.Length == Constants.passportIDLength) return true;
+            if (userInput.Length == Constants.PassportIDLength) return true;
             else return false;
         }
         private static string CheckIsItPhoneNumber(string phoneNumber)
         {
-            int flag = Constants.startNumberDefenition;
+            int flag = Constants.StartNumberDefenition;
 
             if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
             for (int i = 0; i < phoneNumber.Split('-').Length; i++)
@@ -210,11 +201,11 @@ namespace Project
                 if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
             }
             //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
-            while (flag != Constants.startNumberDefenition)
+            while (flag != Constants.StartNumberDefenition)
             {
                 Console.WriteLine(SorryMessage, _phoneNumFormat);
                 phoneNumber = Console.ReadLine();
-                flag = Constants.startNumberDefenition;
+                flag = Constants.StartNumberDefenition;
                 if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
                 for (int i = 0; i < phoneNumber.Split('-').Length; i++)
                 {
@@ -229,13 +220,13 @@ namespace Project
         #region Main Methods to get users Info
         public static void Greet()
         {
-            Console.WriteLine(_greetingMessage, WhatTimeOfDayIsItNow(), Constants.botName, Constants.nameOfproduct);
+            Console.WriteLine(_greetingMessage, WhatTimeOfDayIsItNow(), Constants.BotName, Constants.NameOfproduct);
         }
         public static int GetUserSimpleAnswer()
         {
             string userAnswer = Console.ReadLine().ToUpper();
             userAnswer = ValidUserAnswer(userAnswer);
-            if (userAnswer == Constants.yesString || userAnswer == Constants.yString) return (int)SimpleAnswers.YES;
+            if (userAnswer == Constants.YesString || userAnswer == Constants.YString) return (int)SimpleAnswers.YES;
             else return (int)SimpleAnswers.NO;
         }
         public static void AskForIntroducing(int userInterested)
@@ -249,36 +240,6 @@ namespace Project
                 Console.WriteLine(_glad);
                 Console.WriteLine(_askForIntroducing);
             }
-        }
-        public static void InsertIntoProfile(ArrayList profile, object info)
-        {
-            profile.Add(info);
-            //TODO: logg
-        }
-        public static void InsertIntoProfile(ArrayList profile, object info1, object info2)
-        {
-            profile.Add(info1);
-            profile.Add(info2);
-            //TODO: logg
-        }
-        public static void InsertIntoProfile(ArrayList profile, object info1, object info2, object info3)
-        {
-            profile.Add(info1);
-            profile.Add(info2);
-            profile.Add(info3);
-            //TODO: logg
-        }
-        public static void DeleteFromProfile(ArrayList profile, object info1, object info2, object info3)
-        {
-            bool searched = profile.Contains(info1);
-            if (searched) profile.Remove(info1);
-            //TODO: logg
-            searched = profile.Contains(info2);
-            if (searched) profile.Remove(info2);
-            //TODO: logg
-            searched = profile.Contains(info3);
-            if (searched) profile.Remove(info3);
-            //TODO: logg
         }
         public static (string, string) GetApplicantFullName()
         {
@@ -319,7 +280,7 @@ namespace Project
         }
         public static double GetApplicantIncome(Applicant applicant)
         {
-            Console.WriteLine(_askAboutIncome, applicant.ApplicantName);
+            Console.WriteLine(_askAboutIncome, applicant.Name);
             string userInput = Console.ReadLine();
             userInput = TryParseToDouble(userInput);
             double applicantIncome = Double.Parse(userInput);
@@ -351,9 +312,9 @@ namespace Project
         {
             Console.WriteLine(_whatIsYourSex);
             string userInput = Console.ReadLine().ToUpper();
-            while (userInput.StartsWith(Constants.male) == false && userInput.StartsWith(Constants.female) == false)
+            while (userInput.StartsWith(Constants.Male) == false && userInput.StartsWith(Constants.Female) == false)
             {
-                Console.WriteLine(_askAgainForInvalidAnswer, Constants.male, Constants.female);
+                Console.WriteLine(_askAgainForInvalidAnswer, Constants.Male, Constants.Female);
                 userInput = Console.ReadLine().ToUpper();
             }
             return userInput;
@@ -374,7 +335,7 @@ namespace Project
                     }
                     break;
                 case (int)SimpleAnswers.NO:
-                    answer = Constants.startNumberDefenition;
+                    answer = Constants.StartNumberDefenition;
                     break;
                 default:
                     Console.WriteLine("Smth goes wrong!!!");
@@ -396,7 +357,7 @@ namespace Project
         public static void ShowTheListOfLoans(Applicant applicant)
         {
             ArrayList collectionOfLoans = CreateListIfLoans();
-            Console.WriteLine(_introduceLoans, applicant.ApplicantName, collectionOfLoans.Capacity);
+            Console.WriteLine(_introduceLoans, applicant.Name, collectionOfLoans.Capacity);
             foreach (LoanName loan in collectionOfLoans)
             {
                 Console.WriteLine(loan);
@@ -439,7 +400,7 @@ namespace Project
         }
         public static int AskIfApplicantWantOtherLoan(Applicant applicant, double estimateSum)
         {
-            Console.WriteLine(_askWhetherToChangeLoan, applicant.ApplicantName);
+            Console.WriteLine(_askWhetherToChangeLoan, applicant.Name);
             int decision = GetUserSimpleAnswer();
             switch (decision)
             {
@@ -458,6 +419,22 @@ namespace Project
             int answer = GetUserSimpleAnswer();
             if (answer == (int)SimpleAnswers.NO) Goodbye();
             else Console.WriteLine(_continueToInsertProfile);
+        }
+        #endregion
+
+        #region InerfaceMethods
+        public static void InsertIntoProfile<T>(ArrayList profile, T info)
+        {
+            profile.Add(info);
+            //logg
+        }
+
+        public static ArrayList UpdateProfile<T>(ArrayList profile, T info)
+        {
+            int index = profile.IndexOf(info);
+            profile[index] = info;
+            // logg
+            return profile;
         }
         #endregion
     }

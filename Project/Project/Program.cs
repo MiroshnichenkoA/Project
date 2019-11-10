@@ -13,7 +13,6 @@ namespace Project
             #region Bot greets user and asks wheather user wants to get a product
             Bot.Greet();
             int userInterested = Bot.GetUserSimpleAnswer();
-            //TODO: logg
             #endregion
 
             #region Bot gets user information to create new Applicant
@@ -23,8 +22,7 @@ namespace Project
             Applicant applicant = new Applicant(applicantFullName.Item2, applicantFullName.Item1, applicantBirthday);
             Bot.CheckIfApplicantIsAdult(applicant);
             ArrayList applicantProfile = new ArrayList();
-            Bot.InsertIntoProfile(applicantProfile, applicant.ApplicantName, applicant.ApplicantSurname, applicant.ApplicantDateOfBirth);
-            //TODO: logg
+            Bot.InsertIntoProfile(applicantProfile, applicant);
             #endregion
 
             #region Bot makes a product proposal for the applicant
@@ -32,42 +30,39 @@ namespace Project
             Bot.AskToChooseCreditType();
             int choosedLoan = applicant.ChooseCreditType();
             dynamic loan = Bot.CreateALoanType(choosedLoan);
-            //TODO: logg
-            Bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
-            double applicantIncome = Bot.GetApplicantIncome(applicant);
-            Bot.InsertIntoProfile(applicantProfile, applicantIncome);
-            double estimateSum = Bot.EstimateCreditSum(applicantIncome, loan);
+            Bot.InsertIntoProfile(applicantProfile, loan);
+            applicant.Income = Bot.GetApplicantIncome(applicant);
+            Bot.UpdateProfile(applicantProfile, applicant);
+            double estimateSum = Bot.EstimateCreditSum(applicant.Income, loan);
             int applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
             while (applicantWantsAnotherLoan != (int)SimpleAnswers.AGREE)
             {
-                Bot.DeleteFromProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
                 Bot.ShowTheListOfLoans(applicant);
                 Bot.AskToChooseCreditType();
                 choosedLoan = applicant.ChooseCreditType();
                 loan = Bot.CreateALoanType(choosedLoan);
-                Bot.InsertIntoProfile(applicantProfile, loan.GetType(), loan.ThisConditions().Item1, loan.ThisConditions().Item2);
-                estimateSum = Bot.EstimateCreditSum(applicantIncome, loan);
+                Bot.UpdateProfile(applicantProfile, loan);
+                estimateSum = Bot.EstimateCreditSum(applicant.Income, loan);
                 applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
             }
             Bot.IfToContinue();
-            //TO DO: how much does applicant actually wants?
-            // TODO: logg
             #endregion
 
             #region Bot fills in full applicant's profile
-            Passport passport = applicant.GivePassport(applicant);
-            //TODO: logg
-            Bot.InsertIntoProfile(applicantProfile, passport.ID, passport.DateOfIssue, passport.DateOfExpiry);
-            applicantProfile = applicant.FillTheProfile(applicantProfile);
-            Console.WriteLine(Bot.ProfileIsFilled, applicant.ApplicantName);
+            applicant.Passport = applicant.GivePassport(applicant);
+            Bot.UpdateProfile(applicantProfile, applicant);
+            applicant.FillTheProfile();
+            Bot.UpdateProfile(applicantProfile, applicant);
+            Console.WriteLine(Bot.ProfileIsFilled, applicant.Name);
             if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber();
-            Bot.InsertIntoProfile(applicantProfile, applicant.PhoneNumber);
+            Bot.UpdateProfile(applicantProfile, applicant);
             //TODO Event sms
             // TODO logg
             #endregion
 
             #region Underwraiter Calculate Credit Sum For Applicant and Do All Needed Checks
-            //Underwriter.Underwriter.Main(applicantProfile);
+            double credit = Underwriter.Underwriter.FinalSum(applicantProfile);
+            Console.WriteLine($"YOU CAN TAKe - {credit} BYN");
             #endregion
 
             #region

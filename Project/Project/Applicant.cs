@@ -10,36 +10,39 @@ namespace Project
     sealed class Applicant
     {
         #region PrivateFields
-        private readonly string _applicantSurname;
-        private readonly string _applicantName;
-        private readonly DateTime _applicantDateOfBirth;
+        private readonly string _surname;
+        private readonly string _name;
+        private readonly DateTime _bitrhday;
         private readonly int _age;
-        private readonly int _applicantInternalID;
-        private static int indexForApplicantCounting = Constants.startNumberDefenition;
-        private Passport _applicantPassport;
+        private int _internalID;
+        private Passport _passport;
         private string _phoneNumber;
+        private string _sex;
+        private int _numOfChild;
+        private double _income;
         #endregion
 
         #region Constructor
-        public Applicant(string surname, string name, DateTime dateOfBirth)
+        public Applicant(string surname, string name, DateTime birthday)
         {
-            _applicantSurname = surname;
-            _applicantName = name;
-            _applicantDateOfBirth = dateOfBirth;
-            _age = DateTime.Now.Year - _applicantDateOfBirth.Year;
-            _applicantInternalID = indexForApplicantCounting + 1;
-            indexForApplicantCounting += 1;
+            _surname = surname;
+            _name = name;
+            _bitrhday = birthday;
+            _age = DateTime.Now.Year - _bitrhday.Year;
         }
         #endregion
 
         #region Properties
-        public string ApplicantSurname {get { return _applicantSurname; } }
-        public string ApplicantName { get { return _applicantName; } }
-        public DateTime ApplicantDateOfBirth { get { return _applicantDateOfBirth; } }
+        public string Surname {get { return _surname; } }
+        public string Name { get { return _name; } }
+        public DateTime Birthday { get { return _bitrhday; } }
         public int Age { get { return _age; } }
-        public int ApplicantInternalID { get { return _applicantInternalID; } }
+        public int InternalID { get { return _internalID; } set { _internalID = value; } }
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
-        public Passport ApplicantPassport { get { return _applicantPassport; } set { _applicantPassport = value; } }
+        public Passport Passport { get { return _passport; } set { _passport = value; } }
+        public string Sex { get { return _sex; } set { _sex = value; } }
+        public int NumOfChild { get { return _numOfChild; } set { _numOfChild = value; } }
+        public double Income { get { return _income; }set { _income = value; } }
         #endregion
 
         #region Help Methods
@@ -61,7 +64,7 @@ namespace Project
         #region Main Methods
         internal DateTime WhenApplicantGotAdult()
         {
-            return ApplicantDateOfBirth.AddYears(Constants.adultYears);
+            return Birthday.AddYears(Constants.AdultYears);
         }
         public int ChooseCreditType()
         {
@@ -71,21 +74,56 @@ namespace Project
             choiseChecked = DoesThisLoanNumExist(choiseChecked);
             return choiseChecked;
         }
-        public ArrayList FillTheProfile(ArrayList applicantProfile)
+        public void FillTheProfile()
         {
-            string sex = Bot.AskSex();
-            int child = Bot.AskAboutChild();
-            Bot.InsertIntoProfile(applicantProfile, sex, child);
-            return applicantProfile;
+            Sex = Bot.AskSex();
+            Passport.Sex = Sex;
+            NumOfChild = Bot.AskAboutChild();
         }
         public Passport GivePassport(Applicant applicant)
         {
             string passportID = Bot.AskPassportID();
             DateTime issue = Bot.AskPassportIssueDate();
-            Passport passport = new Passport(applicant.ApplicantName, applicant.ApplicantSurname, applicant.ApplicantDateOfBirth, passportID, issue);
-            applicant.ApplicantPassport = passport;
-            return passport;
+            applicant.Passport = new Passport(applicant.Name, applicant.Surname, applicant.Birthday, passportID, issue);
+            return applicant.Passport;
         }
         #endregion
+        public object GetInfo(int index)
+        {
+            switch (index)
+            {
+                case (int)Field.Surname:
+                    return _surname;
+                    break;
+                case (int)Field.Name:
+                    return _name;
+                    break;
+                case (int)Field.Bitrhday:
+                    return _bitrhday;
+                    break;
+                case (int)Field.Age:
+                    return _age;
+                    break;
+                case (int)Field.InternalID:
+                    return _internalID;
+                    break;
+                case (int)Field.Passport:
+                    return _passport;
+                    break;
+                case (int)Field.PhoneNumber:
+                    return _phoneNumber;
+                    break;
+                case (int)Field.Sex:
+                    return _sex;
+                    break;
+                case (int)Field.NumOfChild:
+                    return _numOfChild;
+                    break;
+                case (int)Field.Income:
+                    return _income;
+                    break;
+            }
+            return null;
+        }
     }
 }
