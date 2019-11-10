@@ -19,6 +19,7 @@ namespace Project
         private double _currentBalance;
 
         #region Properties
+        public int Term { get { return _maxTermForLoan; } }
         public double InterestRate { get { return _interestRate; } }
         public LoanName Name { get { return _name; } }
         public double MinSum { get { return _minSum; } }

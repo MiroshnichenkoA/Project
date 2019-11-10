@@ -22,6 +22,7 @@ namespace Project
         #endregion
 
         #region Properties
+        public static int Term { get { return _maxTermForLoan; } }
         public static double InterestRate { get { return _interestRate; } }
         public static LoanName Name { get { return _name; } }
         #endregion

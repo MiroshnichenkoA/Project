@@ -62,11 +62,36 @@ namespace Project
 
             #region Underwraiter Calculate Credit Sum For Applicant and Do All Needed Checks
             double credit = Underwriter.Underwriter.FinalSum(applicantProfile);
-            Console.WriteLine($"YOU CAN TAKe - {credit} BYN");
+            // events?
+            switch (credit)
+            {
+                case 0:
+                    Console.WriteLine(Bot.Denyed);
+                    Bot.Goodbye();
+                    break;
+                default:
+                    Console.WriteLine(Bot.Acepted, applicant.Name, applicant.Surname, (int)credit, loan.Name, loan.Term / Constants.MonthInYear, loan.InterestRate);
+                    break;
+            }
+            int aceptFromApplicant = Bot.GetUserSimpleAnswer();
+            if (aceptFromApplicant == (int)SimpleAnswers.NO) Bot.Goodbye();
             #endregion
 
-            #region
+            #region Create Loan Agreement
+            loan = Bot.CreateALoanType(choosedLoan, credit);
+            Bot.UpdateProfile(applicantProfile, loan);
+            CreateLoanAgreement(applicantProfile);
+            Console.WriteLine("DONE! YOU CAN FIND YOUR LOAN AGREEMENT IN .JSON FILE");
+            // logg
             #endregion
+        }
+        static async Task CreateLoanAgreement(ArrayList profile)
+        {
+            using (FileStream fs = new FileStream("Agreement.json", FileMode.Create))
+            {
+                await JsonSerializer.SerializeAsync<ArrayList>(fs, profile);
+                Console.WriteLine("Data has been saved to file");
+            }
         }
     }
 }

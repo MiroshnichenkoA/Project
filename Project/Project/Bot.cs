@@ -41,6 +41,8 @@ namespace Project
         private static readonly string _howManyChild = "- How many?";
         private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
+        private static readonly string _denyed = "- I'm sorry, {0}, you have been denyed to take credit in our bank.";
+        private static readonly string _acepted = "- {0} {1}, you have been acepted {2} BYN {3} credit under the following conditions: \n term - {4} years \n rate - {5} per year \n Do you agree?";
         #endregion
 
         #region Properties
@@ -49,6 +51,8 @@ namespace Project
         public static string ProfileIsFilled { get { return _profileIsFilled; } }
         public static string LoanAreOnlyForAdult { get { return _loansAreOnlyForAdult; } }
         public static string InsertOnlyNumber { get { return _insertOnlyNumber; } }
+        public static string Denyed { get { return _denyed; } }
+        public static string Acepted { get { return _acepted; } }
         #endregion
 
         #region Helpping Methods
@@ -386,6 +390,23 @@ namespace Project
                     return new EstateLoan();
                 case ((int)LoanName.overdraft):
                     return new Overdraft();
+                default:
+                    Console.WriteLine("Ups. Smth goes wrong!!!");
+                    return null;
+            }
+        }
+        public static dynamic CreateALoanType(int loan, double creditSum)
+        {
+            switch (loan)
+            {
+                case ((int)LoanName.auto):
+                    return new CarLoan(creditSum);
+                case ((int)LoanName.consumer):
+                    return new ConsumeLoan(creditSum);
+                case ((int)LoanName.mortgage):
+                    return new EstateLoan(creditSum);
+                case ((int)LoanName.overdraft):
+                    return new Overdraft(creditSum);
                 default:
                     Console.WriteLine("Ups. Smth goes wrong!!!");
                     return null;

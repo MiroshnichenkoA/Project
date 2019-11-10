@@ -14,7 +14,6 @@ namespace Project
         private readonly string _name;
         private readonly DateTime _bitrhday;
         private readonly int _age;
-        private int _internalID;
         private Passport _passport;
         private string _phoneNumber;
         private string _sex;
@@ -37,7 +36,6 @@ namespace Project
         public string Name { get { return _name; } }
         public DateTime Birthday { get { return _bitrhday; } }
         public int Age { get { return _age; } }
-        public int InternalID { get { return _internalID; } set { _internalID = value; } }
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
         public Passport Passport { get { return _passport; } set { _passport = value; } }
         public string Sex { get { return _sex; } set { _sex = value; } }
@@ -103,9 +101,6 @@ namespace Project
                     break;
                 case (int)Field.Age:
                     return _age;
-                    break;
-                case (int)Field.InternalID:
-                    return _internalID;
                     break;
                 case (int)Field.Passport:
                     return _passport;
