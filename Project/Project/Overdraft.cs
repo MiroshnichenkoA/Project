@@ -17,6 +17,7 @@ namespace Project
         private double _creditAmount;
         private double _paymontPerMonth;
         private double _currentBalance;
+        private CreditCard _creditCard;
 
         #region Properties
         public int Term { get { return _maxTermForLoan; } }
@@ -29,6 +30,7 @@ namespace Project
         public double CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
         public double PaymontPerMonth { get { return _paymontPerMonth; } }
         public double CurrentBalance { get { return _currentBalance; } }
+        private CreditCard CreditCard { get { return _creditCard; } set { _creditCard = value; } }
         #endregion
 
         #region Constructs
@@ -43,6 +45,7 @@ namespace Project
             _experianTime = _issueTime.AddYears(_maxTermForLoan);
             _paymontPerMonth = (_creditAmount / _maxTermForLoan) + ((_creditAmount * _interestRate) / (Constants.MonthInYear * Constants.ToPer));
             _currentBalance = _creditAmount;
+            _creditCard = RealeseCard();
         }
         #endregion
         public static (LoanName, int, double, string, double, double) Conditions()
@@ -98,6 +101,12 @@ namespace Project
                     break;
             }
             return null;
+        }
+
+        private CreditCard RealeseCard()
+        {
+            CreditCard creditCard = new CreditCard();
+            return creditCard;
         }
     }
 }

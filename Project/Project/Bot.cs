@@ -190,10 +190,6 @@ namespace Project
                 return 0;
             }
         }
-        //private static T SearchInProfile<T>(ArrayList profile, T info)
-        //{
-          //  return (T)profile[profile.IndexOf(info)];
-        //}
         private static bool CheckedID(string userInput)
         {
             if (userInput.Length == Constants.PassportIDLength) return true;
@@ -208,7 +204,6 @@ namespace Project
             {
                 if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
             }
-            //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             while (flag != Constants.StartNumberDefenition)
             {
                 Console.WriteLine(SorryMessage, _phoneNumFormat);
@@ -219,7 +214,6 @@ namespace Project
                 {
                     if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
                 }
-                //TODO try catch  0, 2, 3 item of massive = 2, 1 item = 3
             }
             return phoneNumber;
         }
