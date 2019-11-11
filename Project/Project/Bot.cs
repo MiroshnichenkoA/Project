@@ -290,6 +290,7 @@ namespace Project
         }
         public static string AskPassportID()
         {
+            Console.WriteLine(_askToProvidePassportID);
             string userInput = Console.ReadLine();
             bool check = CheckedID(userInput);
             while (check == false)

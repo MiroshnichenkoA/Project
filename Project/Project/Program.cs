@@ -30,7 +30,7 @@ namespace Project
             #region Bot makes a product proposal for the applicant
             Bot.ShowTheListOfLoans(applicant);
             Bot.AskToChooseCreditType();
-            int choosedLoan = applicant.ChooseCreditType();
+            int choosedLoan = applicant.ChooseCreditType(applicant);
             dynamic loan = Bot.CreateALoanType(choosedLoan);
             applicant.Income = Bot.GetApplicantIncome(applicant);
             Bot.UpdateProfileApplicant(applicantProfile, applicant);
@@ -40,7 +40,7 @@ namespace Project
             {
                 Bot.ShowTheListOfLoans(applicant);
                 Bot.AskToChooseCreditType();
-                choosedLoan = applicant.ChooseCreditType();
+                choosedLoan = applicant.ChooseCreditType(applicant);
                 loan = Bot.CreateALoanType(choosedLoan);
                 estimateSum = Bot.EstimateCreditSum(applicant.Income, loan);
                 applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
@@ -50,7 +50,7 @@ namespace Project
             #endregion
 
             #region Bot fills in full applicant's profile
-            applicant.Passport = applicant.GivePassport(applicant);
+            applicant.Passport = applicant.GivePassport();
             Bot.UpdateProfileApplicant(applicantProfile, applicant);
             applicant.FillTheProfile();
             Bot.UpdateProfileApplicant(applicantProfile, applicant);

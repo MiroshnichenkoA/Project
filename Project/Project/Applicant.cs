@@ -67,27 +67,6 @@ namespace Project
         {
             return Birthday.AddYears(Constants.AdultYears);
         }
-        public int ChooseCreditType()
-        {
-            string choise = Console.ReadLine();
-            choise = Bot.TryParseToInt(choise);
-            int choiseChecked = Int32.Parse(choise);
-            choiseChecked = DoesThisLoanNumExist(choiseChecked);
-            return choiseChecked;
-        }
-        public void FillTheProfile()
-        {
-            Sex = Bot.AskSex();
-            Passport.Sex = Sex;
-            NumOfChild = Bot.AskAboutChild();
-        }
-        public Passport GivePassport(Applicant applicant)
-        {
-            string passportID = Bot.AskPassportID();
-            DateTime issue = Bot.AskPassportIssueDate();
-            applicant.Passport = new Passport(applicant.Name, applicant.Surname, applicant.Birthday, passportID, issue);
-            return applicant.Passport;
-        }
         public void GetResponseAboutLoanIssue(double creditSum)
         {
             if (creditSum == Constants.Denyed)
@@ -103,6 +82,14 @@ namespace Project
                 Notify?.Invoke($"Dear customer, you have been approved a loan for {creditSum} BYN. Waiting for you to sign a loan agreement!", PhoneNumber);
                 Console.ResetColor();
             }
+        }
+        public int ChooseCreditType(Applicant applicant)
+        {
+            string choise = Console.ReadLine();
+            choise = Bot.TryParseToInt(choise);
+            int choiseChecked = Int32.Parse(choise);
+            choiseChecked = applicant.DoesThisLoanNumExist(choiseChecked);
+            return choiseChecked;
         }
         #endregion
         public object GetInfo(int index)
