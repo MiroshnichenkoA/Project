@@ -6,17 +6,12 @@ namespace Underwriter
 {
     public static class Underwriter
     {
-        private static readonly string _denyed = "Denyed";
-
-        public static string Denyed { get { return _denyed; } }
-
         public static double FinalSum(ArrayList profile)
         {
             bool passportControl = PassportControl.ValidPassport(profile);
             if (passportControl == false || ManUnder27(profile)) 
             {
                 return Constants.Denyed;
-                //TODO logger
             }
             else
             {
@@ -26,13 +21,20 @@ namespace Underwriter
                 income = income - existingPayments - elsePayments;
                 double rate = (double)SearchInProfileLoan(profile, (int)Field.Rate);
                 int term = (int)SearchInProfileLoan(profile, (int)Field.Term);
-                return CreditPosibility(income) / (1 + rate) * term;
+                double creditSum = CreditPosibility(income) / (1 + rate) * term;
+                double minSum = (double)SearchInProfileLoan(profile, (int)Field.MinSum);
+                double maxSum = (double)SearchInProfileLoan(profile, (int)Field.MaxSum);
+                if (creditSum < minSum) return Constants.Denyed;
+                if (creditSum > maxSum) return maxSum;
+                return creditSum;
             }
         }
+
         public static double EstimateSum(double income, (double, int) conditions)
         {
             return CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
         }
+
         static double CreditPosibility(double income)
         {
             return income * Constants.CreditPossibilityRatio;
@@ -56,6 +58,7 @@ namespace Underwriter
             }
             else return false;
         }
+
         public static object SearchInProfileApplicant(ArrayList profile, int index)
         {
             Applicant applicant = (Applicant)profile[Constants.Applicant];

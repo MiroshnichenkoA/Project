@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Project
 {
@@ -43,6 +46,7 @@ namespace Project
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
         private static readonly string _denyed = "- I'm sorry, {0}, you have been denyed to take credit in our bank.";
         private static readonly string _acepted = "- {0} {1}, you have been acepted {2} BYN {3} credit under the following conditions: \n term - {4} years \n rate - {5} per year \n Do you agree?";
+        private static readonly string _agreementIsSavedInJSON = "Done! You can find your loan agreement in .json file.";
         #endregion
 
         #region Properties
@@ -51,8 +55,8 @@ namespace Project
         public static string ProfileIsFilled { get { return _profileIsFilled; } }
         public static string LoanAreOnlyForAdult { get { return _loansAreOnlyForAdult; } }
         public static string InsertOnlyNumber { get { return _insertOnlyNumber; } }
-        public static string Denyed { get { return _denyed; } }
         public static string Acepted { get { return _acepted; } }
+        public static string AgreementIsSavedInJSON { get { return _agreementIsSavedInJSON; } }
         #endregion
 
         #region Helpping Methods
@@ -292,15 +296,15 @@ namespace Project
         }
         public static string AskPassportID()
         {
-            bool check;
-            string userInput;
-            do
+            string userInput = Console.ReadLine();
+            bool check = CheckedID(userInput);
+            while (check == false)
             {
                 Console.WriteLine(SorryMessage, _passportIDFormat);
                 Console.WriteLine(_askToProvidePassportID);
                 userInput = Console.ReadLine();
                 check = CheckedID(userInput);
-            } while (check == false);
+            }
             return userInput;
         }
         public static DateTime AskPassportIssueDate()
@@ -441,6 +445,13 @@ namespace Project
             if (answer == (int)SimpleAnswers.NO) Goodbye();
             else Console.WriteLine(_continueToInsertProfile);
         }
+        public static async Task CreateLoanAgreement(ArrayList profile)
+        {
+            using (FileStream fs = new FileStream("Agreement.json", FileMode.OpenOrCreate))
+            {
+                await JsonSerializer.SerializeAsync<ArrayList>(fs, profile);
+            }
+        }
         #endregion
 
         #region InerfaceMethods
@@ -450,11 +461,32 @@ namespace Project
             //logg
         }
 
-        public static ArrayList UpdateProfile<T>(ArrayList profile, T info)
+        public static ArrayList UpdateProfileApplicant<T>(ArrayList profile, T info)
         {
-            int index = profile.IndexOf(info);
-            profile[index] = info;
-            // logg
+            try
+            {
+                profile[0] = info;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Исключение: {ex.Message}");
+                Console.WriteLine($"Метод: {ex.TargetSite}");
+                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            }
+            return profile;
+        }
+        public static ArrayList UpdateProfileLoan<T>(ArrayList profile, T info)
+        {
+            try
+            {
+                profile[1] = info;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Исключение: {ex.Message}");
+                Console.WriteLine($"Метод: {ex.TargetSite}");
+                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            }
             return profile;
         }
         #endregion

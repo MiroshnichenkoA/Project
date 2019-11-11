@@ -9,6 +9,9 @@ namespace Project
     [AdultAge]
     sealed class Applicant
     {
+        public delegate void SMSHandler(string message, string howToNotify);
+        public event SMSHandler Notify;
+
         #region PrivateFields
         private readonly string _surname;
         private readonly string _name;
@@ -85,6 +88,22 @@ namespace Project
             applicant.Passport = new Passport(applicant.Name, applicant.Surname, applicant.Birthday, passportID, issue);
             return applicant.Passport;
         }
+        public void GetResponseAboutLoanIssue(double creditSum)
+        {
+            if (creditSum == Constants.Denyed)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Notify?.Invoke("Dear customer, we are forced to refuse to provide you a loan.", PhoneNumber);
+                Console.ResetColor();
+                Bot.Goodbye();
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Notify?.Invoke($"Dear customer, you have been approved a loan for {creditSum} BYN. Waiting for you to sign a loan agreement!", PhoneNumber);
+                Console.ResetColor();
+            }
+        }
         #endregion
         public object GetInfo(int index)
         {
@@ -92,33 +111,25 @@ namespace Project
             {
                 case (int)Field.Surname:
                     return _surname;
-                    break;
                 case (int)Field.Name:
                     return _name;
-                    break;
                 case (int)Field.Bitrhday:
                     return _bitrhday;
-                    break;
                 case (int)Field.Age:
                     return _age;
-                    break;
                 case (int)Field.Passport:
                     return _passport;
-                    break;
                 case (int)Field.PhoneNumber:
                     return _phoneNumber;
-                    break;
                 case (int)Field.Sex:
                     return _sex;
-                    break;
                 case (int)Field.NumOfChild:
                     return _numOfChild;
-                    break;
                 case (int)Field.Income:
                     return _income;
-                    break;
             }
             return null;
         }
+
     }
 }

@@ -52,6 +52,7 @@ namespace Project
 
         #region ConstantsNotForChange
         public const byte StartNumberDefenition = 0;
+        public const int TimeForTakingDissicion = 5000;
 
         #region Phone Format
         public const int numberOfSlotsInPhoneNumberFormat = 4;

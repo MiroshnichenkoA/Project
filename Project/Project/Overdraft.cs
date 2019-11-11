@@ -26,7 +26,7 @@ namespace Project
         public double MaxSum { get { return _maxSum; } }
         public DateTime IssueTime { get { return _issueTime; } }
         public DateTime ExperianTime { get { return _experianTime; } }
-        protected double CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
+        public double CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
         public double PaymontPerMonth { get { return _paymontPerMonth; } }
         public double CurrentBalance { get { return _currentBalance; } }
         #endregion
