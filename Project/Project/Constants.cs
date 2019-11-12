@@ -70,7 +70,6 @@ namespace Project
         public const string Female = "W";
         public const int MaleCode = 3;
         public const int FemaleCode = 4;
-        public const double Denyed = 0;
         public const int Applicant = 0;
         public const int Loan = 1;
         #endregion

@@ -8,11 +8,13 @@ namespace Project
     {
         private int _number;
         private static int counterOfAllCards = Constants.StartNumberDefenition;
+
         public CreditCard()
         {
             counterOfAllCards += 1;
             _number = counterOfAllCards;
         }
+
         private CreditCard RealeseCard()
         {
             CreditCard creditCard = new CreditCard();

@@ -6,44 +6,92 @@ namespace Underwriter
 {
     public static class Underwriter
     {
-        public static double FinalSum(ArrayList profile)
+        public static double? FinalSum(ArrayList profile)
         {
             bool passportControl = PassportControl.ValidPassport(profile);
             if (passportControl == false || ManUnder27(profile)) 
             {
-                return Constants.Denyed;
+                return null;
             }
             else
             {
+                try
+                {
+                    double check = (double)SearchInProfileApplicant(profile, (int)Field.Income);
+                    check = (double)ExistingPaymonts(profile);
+                    check = Constants.LivingWageBudget + Constants.LivingWageBudget * (int)SearchInProfileApplicant(profile, (int)Field.NumOfChild);
+                }
+                catch (NullReferenceException ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                    Console.WriteLine($"Method: {ex.TargetSite}");
+                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                    Console.WriteLine($"Method: {ex.TargetSite}");
+                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                }
                 double income = (double)SearchInProfileApplicant(profile, (int)Field.Income);
-                double existingPayments = ExistingPaymonts(profile);
-                double elsePayments = Constants.LivingWageBudget + Constants.LivingWageBudget * (int)SearchInProfileApplicant(profile, (int)Field.NumOfChild);
+                double existingPayments = (double)ExistingPaymonts(profile);
+                double elsePayments = Constants.LivingWageBudget + Constants.LivingWageBudget * (int)SearchInProfileApplicant(profile, (int)Field.NumOfChild);    
                 income = income - existingPayments - elsePayments;
                 double rate = (double)SearchInProfileLoan(profile, (int)Field.Rate);
                 int term = (int)SearchInProfileLoan(profile, (int)Field.Term);
+                try
+                {
+                    double check = CreditPosibility(income) / (1 + rate) * term;
+                }
+                catch (NullReferenceException ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                    Console.WriteLine($"Method: {ex.TargetSite}");
+                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                }
                 double creditSum = CreditPosibility(income) / (1 + rate) * term;
                 double minSum = (double)SearchInProfileLoan(profile, (int)Field.MinSum);
                 double maxSum = (double)SearchInProfileLoan(profile, (int)Field.MaxSum);
-                if (creditSum < minSum) return Constants.Denyed;
+                if (creditSum < minSum) return null;
                 if (creditSum > maxSum) return maxSum;
                 return creditSum;
             }
         }
 
-        public static double EstimateSum(double income, (double, int) conditions)
+        public static double EstimateSum(double? income, (double, int) conditions)
         {
-            return CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
+            try
+            {
+                double result = (double)CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
+            }
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Method: {ex.TargetSite}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            }
+            return (double)CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
         }
 
-        static double CreditPosibility(double income)
+        static double CreditPosibility(double? income)
         {
-            return income * Constants.CreditPossibilityRatio;
+            try
+            {
+                double result = (double)income * Constants.CreditPossibilityRatio;
+            }
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Method: {ex.TargetSite}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            }
+            return (double)income * Constants.CreditPossibilityRatio;
         }
 
-        static double ExistingPaymonts(ArrayList profile)
+        static double? ExistingPaymonts(ArrayList profile)
         {
             if ((DateTime)SearchInProfileLoan(profile, (int)Field.Expiry) > DateTime.Now) return (double)SearchInProfileLoan(profile, (int)Field.Paymont);
-            else return 0;
+            else return null;
         }
 
         static bool ManUnder27(ArrayList profile)

@@ -7,7 +7,7 @@ using System.Text;
 namespace Project
 {
     [AdultAge]
-    sealed class Applicant
+    sealed class Applicant : IProfileManager
     {
         public delegate void SMSHandler(string message, string howToNotify);
         public event SMSHandler Notify;
@@ -20,8 +20,8 @@ namespace Project
         private Passport _passport;
         private string _phoneNumber;
         private string _sex;
-        private int _numOfChild;
-        private double _income;
+        private int? _numOfChild;
+        private double? _income;
         #endregion
 
         #region Constructor
@@ -31,6 +31,11 @@ namespace Project
             _name = name;
             _bitrhday = birthday;
             _age = DateTime.Now.Year - _bitrhday.Year;
+            _passport = null;
+            _phoneNumber = null;
+            _sex = null;
+            _numOfChild = null;
+            _income = null;
         }
         #endregion
 
@@ -38,12 +43,12 @@ namespace Project
         public string Surname {get { return _surname; } }
         public string Name { get { return _name; } }
         public DateTime Birthday { get { return _bitrhday; } }
-        public int Age { get { return _age; } }
+        public int? Age { get { return _age; } }
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
         public Passport Passport { get { return _passport; } set { _passport = value; } }
         public string Sex { get { return _sex; } set { _sex = value; } }
-        public int NumOfChild { get { return _numOfChild; } set { _numOfChild = value; } }
-        public double Income { get { return _income; }set { _income = value; } }
+        public int? NumOfChild { get { return _numOfChild; } set { _numOfChild = value; } }
+        public double? Income { get { return _income; }set { _income = value; } }
         #endregion
 
         #region Help Methods
@@ -67,9 +72,9 @@ namespace Project
         {
             return Birthday.AddYears(Constants.AdultYears);
         }
-        public void GetResponseAboutLoanIssue(double creditSum)
+        public void GetResponseAboutLoanIssue(double? creditSum)
         {
-            if (creditSum == Constants.Denyed)
+            if (creditSum == null)
             {
                 Console.BackgroundColor = ConsoleColor.Red;
                 Notify?.Invoke("Dear customer, we are forced to refuse to provide you a loan.", PhoneNumber);
@@ -79,7 +84,7 @@ namespace Project
             else
             {
                 Console.BackgroundColor = ConsoleColor.Green;
-                Notify?.Invoke($"Dear customer, you have been approved a loan for {creditSum} BYN. Waiting for you to sign a loan agreement!", PhoneNumber);
+                Notify?.Invoke($"Dear customer, you have been approved a loan for {(int)creditSum} BYN. Waiting for you to sign a loan agreement!", PhoneNumber);
                 Console.ResetColor();
             }
         }

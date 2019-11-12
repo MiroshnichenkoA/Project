@@ -63,7 +63,7 @@ namespace Project
             Thread.Sleep(Constants.TimeForTakingDissicion);
             loan.CreditAmount = Underwriter.Underwriter.FinalSum(applicantProfile);
             applicant.GetResponseAboutLoanIssue(loan.CreditAmount);
-            Console.WriteLine(Bot.Acepted);
+            Console.WriteLine(Bot.Acepted, applicant.Name, applicant.Surname, (int)loan.CreditAmount, loan.Name, loan.Term / Constants.MonthInYear, loan.InterestRate);
             int aceptFromApplicant = Bot.GetUserSimpleAnswer();
             if (aceptFromApplicant == (int)SimpleAnswers.NO) Bot.Goodbye();
             #endregion
@@ -76,11 +76,13 @@ namespace Project
             Bot.Goodbye();
             #endregion
         }
-        
+
+        #region Method For Event
         private static void SendSMS(string message, string howToNotify)
         {
             // Imitate sending sms on PhoneNumber
             Console.WriteLine(message);
         }
+        #endregion
     }
 }

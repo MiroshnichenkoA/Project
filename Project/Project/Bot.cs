@@ -81,9 +81,12 @@ namespace Project
         }
         private static string[] ValidUserAnswer(string[] userAnswer)
         {
+            string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.TellName, Constants.TellSurname);
+            Console.WriteLine(SorryMessage, sorryExplain);
+            userAnswer = Console.ReadLine().Split(" ");
             while (userAnswer.Length != Constants.NumOfWordsInFullName)
             {
-                string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.TellName, Constants.TellSurname);
+                sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.TellName, Constants.TellSurname);
                 Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().Split(" ");
             }
@@ -179,15 +182,15 @@ namespace Project
         {
             return loan.ThisConditions();
         }
-        private static double AskUnderwritter(double income, dynamic loan)
+        private static double? AskUnderwritter(double? income, dynamic loan)
         {
             if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MaxSum) return loan.MaxSum;
-            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return 0;
+            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return null;
             else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MinSum && Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MaxSum) return Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter());
             else
             {
                 Console.WriteLine("Smth goes wrong!!!");
-                return 0;
+                return null;
             }
         }
         private static bool CheckedID(string userInput)
@@ -250,7 +253,7 @@ namespace Project
             do
             {
                 splittedUserInput = ValidUserAnswer(splittedUserInput);
-            } while (String.IsNullOrWhiteSpace(splittedUserInput[0]) && String.IsNullOrWhiteSpace(splittedUserInput[1]));        
+            } while (String.IsNullOrWhiteSpace(splittedUserInput[0]) || String.IsNullOrWhiteSpace(splittedUserInput[1]));        
             return CorrectPositionsOfNameAndSurname((splittedUserInput[0], splittedUserInput[1]));
         }
         public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
@@ -411,7 +414,7 @@ namespace Project
                     return null;
             }
         }
-        public static int EstimateCreditSum(double income, dynamic loan)
+        public static int EstimateCreditSum(double? income, dynamic loan)
         {
             int estimateSum = (int)AskUnderwritter(income, loan);
             if (estimateSum > 0) Console.WriteLine(_estimateLoan, estimateSum, loan.Name);

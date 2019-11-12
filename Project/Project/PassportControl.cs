@@ -33,9 +33,18 @@ namespace Underwriter
         {
             DateTime birthday = (DateTime)SearchInProfilePassport(profile, (int)Field.Bitrhday);
             int sex=0;
+            try
+            {
+                string sexDefenition = (string)SearchInProfilePassport(profile, (int)Field.Sex);
+            }
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Method: {ex.TargetSite}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            }
             if ((string)SearchInProfilePassport(profile, (int)Field.Sex) == Constants.Male) sex = Constants.MaleCode;
             else if ((string)SearchInProfilePassport(profile, (int)Field.Sex) == Constants.Female) sex = Constants.FemaleCode;
-            else Console.WriteLine("Smth goes wrong!!");
             string birthdayCode = birthday.ToString();
             string[] code = birthdayCode.Split(' ');
             birthdayCode = code[0];

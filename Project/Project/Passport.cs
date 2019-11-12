@@ -23,6 +23,7 @@ namespace Project
             _surname = name;
             _name = surname;
             _dateOfBirth = dateOfBirth;
+            _sex = null;
             _passportID = passportID;
             _dateOfIssue = dateOfIssue;
             _dateOfExpiry = _dateOfIssue.AddYears(Constants.PassportExpirianTerm);

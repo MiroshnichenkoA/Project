@@ -8,17 +8,17 @@ namespace Project
     public abstract class Loan
     {
         #region Fields
-        protected static LoanName _name;
-        protected static string _purpose;
-        protected static double _interestRate;
-        protected static int _maxTermForLoan;
-        protected DateTime _issueTime;
-        protected DateTime _experianTime;
-        protected double _creditAmount;
-        protected double _paymontPerMonth;
-        protected double _currentBalance;
-        protected static double _minSum;
-        protected static double _maxSum;
+        protected private static LoanName _name;
+        protected private static string _purpose;
+        protected private static double _interestRate;
+        protected private static int _maxTermForLoan;
+        protected private DateTime? _issueTime;
+        protected private DateTime? _experianTime;
+        protected private double? _creditAmount;
+        protected private double? _paymontPerMonth;
+        protected private double? _currentBalance;
+        protected private static double _minSum;
+        protected private static double _maxSum;
         #endregion
 
         #region Properties
@@ -27,18 +27,18 @@ namespace Project
         public static LoanName Name { get { return _name; } }
         #endregion
 
-        public static (LoanName, int, double, string, double, double) Conditions()
+        private static (LoanName, int, double, string, double, double) Conditions()
         {
             return (_name, _maxTermForLoan / Constants.MonthInYear, _interestRate * Constants.ToPer, _purpose, _minSum, _maxSum);
         }
 
-        public (LoanName, double) ThisConditions()
+        private (LoanName, double) ThisConditions()
         {
             (LoanName, double) conditions = (_name, _interestRate);
             return conditions;
         }
 
-        public (double, int) ThisConditionsForUnderwriter()
+        private (double, int) ThisConditionsForUnderwriter()
         {
             (double, int) conditions = (_interestRate, _maxTermForLoan);
             return conditions;
