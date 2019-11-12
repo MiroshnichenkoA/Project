@@ -14,9 +14,9 @@ namespace Project
         private static readonly double _maxSum = Constants.MaxCreditSumOverdraft;
         private DateTime _issueTime;
         private DateTime _experianTime;
-        private double? _creditAmount;
-        private double? _paymontPerMonth;
-        private double? _currentBalance;
+        private double _creditAmount;
+        private double _paymontPerMonth;
+        private double _currentBalance;
         private CreditCard _creditCard;
 
         #region Properties
@@ -27,19 +27,15 @@ namespace Project
         public double MaxSum { get { return _maxSum; } }
         public DateTime IssueTime { get { return _issueTime; } }
         public DateTime ExperianTime { get { return _experianTime; } }
-        public double? CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
-        public double? PaymontPerMonth { get { return _paymontPerMonth; } }
-        public double? CurrentBalance { get { return _currentBalance; } }
+        public double CreditAmount { get { return _creditAmount; } set { _creditAmount = value; } }
+        public double Paymont { get { return _paymontPerMonth; } set { _paymontPerMonth = value; } }
+        public double CurrentBalance { get { return _currentBalance; } }
         private CreditCard CreditCard { get { return _creditCard; } set { _creditCard = value; } }
         #endregion
 
         #region Constructs
         public Overdraft()
         {
-            _creditAmount = null;
-            _paymontPerMonth = null;
-            _currentBalance = null;
-            _creditCard = null;
         }
 
         public Overdraft(double creditAmount)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -45,7 +46,7 @@ namespace Project
         private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
         private static readonly string _denyed = "- I'm sorry, {0}, you have been denyed to take credit in our bank.";
-        private static readonly string _acepted = "- {0} {1}, you have been acepted {2} BYN {3} credit under the following conditions: \n term - {4} years \n rate - {5} per year \n Do you agree?";
+        private static readonly string _acepted = "- {0} {1}, you have been acepted {2} BYN {3} credit under the following conditions: \n term - {4} years \n rate - {5} per year \n Monthly paymont is {6} BYN. \n Do you agree?";
         private static readonly string _agreementIsSavedInJSON = "Done! You can find your loan agreement in .json file.";
         #endregion
 
@@ -182,7 +183,7 @@ namespace Project
         {
             return loan.ThisConditions();
         }
-        private static double? AskUnderwritter(double? income, dynamic loan)
+        private static double? AskUnderwritter(double income, dynamic loan)
         {
             if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MaxSum) return loan.MaxSum;
             else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return null;
@@ -250,10 +251,10 @@ namespace Project
         {
             string userInput = Console.ReadLine();
             string[] splittedUserInput = userInput.Split(" ");
-            do
+            while (String.IsNullOrWhiteSpace(splittedUserInput[0]) || String.IsNullOrWhiteSpace(splittedUserInput[1]))
             {
                 splittedUserInput = ValidUserAnswer(splittedUserInput);
-            } while (String.IsNullOrWhiteSpace(splittedUserInput[0]) || String.IsNullOrWhiteSpace(splittedUserInput[1]));        
+            }        
             return CorrectPositionsOfNameAndSurname((splittedUserInput[0], splittedUserInput[1]));
         }
         public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
@@ -414,7 +415,7 @@ namespace Project
                     return null;
             }
         }
-        public static int EstimateCreditSum(double? income, dynamic loan)
+        public static int EstimateCreditSum(double income, dynamic loan)
         {
             int estimateSum = (int)AskUnderwritter(income, loan);
             if (estimateSum > 0) Console.WriteLine(_estimateLoan, estimateSum, loan.Name);

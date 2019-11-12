@@ -12,11 +12,11 @@ namespace Project
         protected private static string _purpose;
         protected private static double _interestRate;
         protected private static int _maxTermForLoan;
-        protected private DateTime? _issueTime;
-        protected private DateTime? _experianTime;
-        protected private double? _creditAmount;
-        protected private double? _paymontPerMonth;
-        protected private double? _currentBalance;
+        protected private DateTime _issueTime;
+        protected private DateTime _experianTime;
+        protected private double _creditAmount;
+        protected private double _paymontPerMonth;
+        protected private double _currentBalance;
         protected private static double _minSum;
         protected private static double _maxSum;
         #endregion
@@ -25,6 +25,7 @@ namespace Project
         public static int Term { get { return _maxTermForLoan; } }
         public static double InterestRate { get { return _interestRate; } }
         public static LoanName Name { get { return _name; } }
+        public double Paymont { get { return _paymontPerMonth; } set { _paymontPerMonth = value; } } 
         #endregion
 
         private static (LoanName, int, double, string, double, double) Conditions()

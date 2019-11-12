@@ -20,8 +20,8 @@ namespace Project
         private Passport _passport;
         private string _phoneNumber;
         private string _sex;
-        private int? _numOfChild;
-        private double? _income;
+        private int _numOfChild;
+        private double _income;
         #endregion
 
         #region Constructor
@@ -31,11 +31,6 @@ namespace Project
             _name = name;
             _bitrhday = birthday;
             _age = DateTime.Now.Year - _bitrhday.Year;
-            _passport = null;
-            _phoneNumber = null;
-            _sex = null;
-            _numOfChild = null;
-            _income = null;
         }
         #endregion
 
@@ -47,8 +42,8 @@ namespace Project
         public string PhoneNumber { get { return _phoneNumber; } set { _phoneNumber = value; } }
         public Passport Passport { get { return _passport; } set { _passport = value; } }
         public string Sex { get { return _sex; } set { _sex = value; } }
-        public int? NumOfChild { get { return _numOfChild; } set { _numOfChild = value; } }
-        public double? Income { get { return _income; }set { _income = value; } }
+        public int NumOfChild { get { return _numOfChild; } set { _numOfChild = value; } }
+        public double Income { get { return _income; }set { _income = value; } }
         #endregion
 
         #region Help Methods
