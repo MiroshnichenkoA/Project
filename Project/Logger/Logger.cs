@@ -9,7 +9,7 @@ namespace Logger
         const int Length = 30;
 
         private static void Main(string[] args)
-        {         
+        {
         }
 
         public static void Loging(string textToLogg)

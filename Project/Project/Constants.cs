@@ -43,7 +43,8 @@ namespace Project
         #endregion
 
         #region Credit Purpose
-        public const string PurposeCar = "for car purchasing only. You can choose any car you want: a new one from a car dealership or a used one.";
+        public const string PurposeCar = "for car purchasing only. You can choose any car you want: a new one from a car " +
+            "dealership or a used one.";
         public const string PurposeConsume = "for any purchases you want. Our Corporation will not control the purpose of your lending. Also, you will get all the credit amount at once.";
         public const string PurposeEstate = "for purchasing houses and appartments only.";
         public const string PurposeOverdraft = "for any purchases you want. Our Corporation will not control the purpose of your lending. We will give you a credit card and you can lent as many, as you need rigth in the moment.";

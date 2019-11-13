@@ -6,19 +6,13 @@ namespace Project
 {
     public class CreditCard : ICard
     {
-        private int _number;
         private static int counterOfAllCards = Constants.StartNumberDefenition;
 
+        public int Number { get;}
         public CreditCard()
         {
             counterOfAllCards += 1;
-            _number = counterOfAllCards;
-        }
-
-        private CreditCard RealeseCard()
-        {
-            CreditCard creditCard = new CreditCard();
-            return creditCard;
+            Number = counterOfAllCards;
         }
     }
 }

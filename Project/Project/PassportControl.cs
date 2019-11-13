@@ -10,16 +10,34 @@ namespace Underwriter
     {
         internal static bool ValidPassport(ArrayList profile)
         {
-            if (ValidID(profile) && ValidExpiry(profile)) return true;
-            else return false;
+            if (ValidID(profile) && ValidExpiry(profile))
+            {
+                Logger.Logger.Loging($"Passport is valid");
+                return true;
+            }
+            else
+            {
+                Logger.Logger.Loging($"Passport is not valid/ ID Validation is {ValidID(profile)}, Expiry validation is {ValidExpiry(profile)}");
+                return false;
+            }
         }
 
         private static bool ValidID(ArrayList profile)
         {
             string birthdayCode = GetBirthdayCode(profile);
             string IdStartCode = GetIDStartCode(profile);
-            if (birthdayCode.Equals(IdStartCode)) return true;
-            else return false;
+            if (birthdayCode.Equals(IdStartCode))
+            {
+                birthdayCode = null;
+                IdStartCode = null;
+                return true;
+            }
+            else
+            {
+                birthdayCode = null;
+                IdStartCode = null;
+                return false;
+            }
         }
 
         private static bool ValidExpiry(ArrayList profile)
@@ -42,6 +60,8 @@ namespace Underwriter
                 Console.WriteLine($"Exception: {ex.Message}");
                 Console.WriteLine($"Method: {ex.TargetSite}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
+
             }
             if ((string)SearchInProfilePassport(profile, (int)Field.Sex) == Constants.Male) sex = Constants.MaleCode;
             else if ((string)SearchInProfilePassport(profile, (int)Field.Sex) == Constants.Female) sex = Constants.FemaleCode;
@@ -62,25 +82,15 @@ namespace Underwriter
             {
                 idStartCode[i] = id[i];
             }
+            id = null;
             return String.Join("", idStartCode);           
-        }
-
-        public static void InsertIntoProfile<T>(ArrayList profile, T info)
-        {
-            profile.Add(info);
-        }
-
-        public static ArrayList UpdateProfile<T>(ArrayList profile, T info)
-        {
-            int index = profile.IndexOf(info);
-            profile[index] = info;
-            return profile;
         }
 
         private static object SearchInProfilePassport(ArrayList profile, int index)
         {
             Applicant applicant = (Applicant)profile[Constants.Applicant];
             Passport passport = applicant.Passport;
+            applicant = null;
             return passport.GetInfo(index);
         }
     }

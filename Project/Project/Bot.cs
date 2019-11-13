@@ -64,24 +64,43 @@ namespace Project
         private static ScriptForTimeOfDay WhatTimeOfDayIsItNow()
         {
             ScriptForTimeOfDay result;
-            if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.morning && DateTime.Now.Hour < (int)ScriptForTimeOfDay.day) result = ScriptForTimeOfDay.morning;
-            else if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.day && DateTime.Now.Hour < (int)ScriptForTimeOfDay.evening) result = ScriptForTimeOfDay.day;
-            else if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.evening && DateTime.Now.Hour < (int)ScriptForTimeOfDay.night) result = ScriptForTimeOfDay.evening;
-            else result = ScriptForTimeOfDay.night;
-            return result;
+            if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.morning && DateTime.Now.Hour < (int)ScriptForTimeOfDay.day)
+            {
+                result = ScriptForTimeOfDay.morning;
+                Logger.Logger.Loging($"Time of the day: {result.ToString()}");
+            }
+            else if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.day && DateTime.Now.Hour < (int)ScriptForTimeOfDay.evening)
+            {
+                result = ScriptForTimeOfDay.day;
+                Logger.Logger.Loging($"Time of the day: {result.ToString()}");
+            }
+            else if (DateTime.Now.Hour >= (int)ScriptForTimeOfDay.evening && DateTime.Now.Hour < (int)ScriptForTimeOfDay.night)
+            {
+                result = ScriptForTimeOfDay.evening;
+                Logger.Logger.Loging($"Time of the day: {result.ToString()}");
+            }
+            else
+            {
+                result = ScriptForTimeOfDay.night;
+                Logger.Logger.Loging($"Time of the day: {result.ToString()}");
+            }
+                return result;
         }
         private static string ValidUserAnswer(string userAnswer)
         {
             while ((userAnswer != Constants.YesString) && (userAnswer != Constants.NoString) && (userAnswer != Constants.YString) && (userAnswer != Constants.NString))
             {
+                Logger.Logger.Loging($"Invalid user answer. User input: {userAnswer}");
                 string sorryExplain = String.Format(_askAgainForInvalidAnswer, SimpleAnswers.YES, SimpleAnswers.NO);
                 Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().ToUpper();
+                sorryExplain = null;
             }
             return userAnswer;
         }
         private static string[] ValidUserAnswer(string[] userAnswer)
         {
+            Logger.Logger.Loging($"Invalid user answer. User input: {userAnswer}");
             string sorryExplain = String.Format(_askAgainForInvalidAnswer, Constants.TellName, Constants.TellSurname);
             Console.WriteLine(SorryMessage, sorryExplain);
             userAnswer = Console.ReadLine().Split(" ");
@@ -91,14 +110,15 @@ namespace Project
                 Console.WriteLine(SorryMessage, sorryExplain);
                 userAnswer = Console.ReadLine().Split(" ");
             }
+            sorryExplain = null;
             return userAnswer;
         }
         private static (T, T) CorrectPositionsOfNameAndSurname<T>((T, T) fullName)
         {
             Console.WriteLine(_askWhereIsTheName, fullName.Item1);
-            int namePosition = GetUserSimpleAnswer();
+            int? namePosition = GetUserSimpleAnswer();
             (T, T) correctFullName;
-            if (namePosition == (int)SimpleAnswers.YES)
+            if (namePosition == (int?)SimpleAnswers.YES)
             {
                 correctFullName.Item1 = fullName.Item1;
                 correctFullName.Item2 = fullName.Item2;
@@ -108,6 +128,8 @@ namespace Project
                 correctFullName.Item1 = fullName.Item2;
                 correctFullName.Item2 = fullName.Item1;
             }
+            namePosition = null;
+            Logger.Logger.Loging($"Coreection of position of name and surname. Corrected output: {correctFullName}");
             return correctFullName;
         }
         public static string TryParseToDate(string userInput)
@@ -116,6 +138,7 @@ namespace Project
             bool check = DateTime.TryParse(userInput, out dateOfBitrh);
             while (check == false)
             {
+                Logger.Logger.Loging($"Invalid user answer. User input: {userInput}");
                 Console.WriteLine(SorryMessage, _insertOnlyDate);
                 userInput = Console.ReadLine();
                 check = DateTime.TryParse(userInput, out dateOfBitrh);
@@ -128,6 +151,7 @@ namespace Project
             bool check = Int32.TryParse(userInput, out num);
             while (check == false)
             {
+                Logger.Logger.Loging($"Invalid user answer. User input: {userInput}");
                 Console.WriteLine(SorryMessage, _insertOnlyNumber);
                 userInput = Console.ReadLine();
                 check = Int32.TryParse(userInput, out num);
@@ -140,6 +164,7 @@ namespace Project
             bool check = Double.TryParse(userInput, out num);
             while (check == false)
             {
+                Logger.Logger.Loging($"Invalid user answer. User input: {userInput}");
                 Console.WriteLine(SorryMessage, _insertOnlyNumber);
                 userInput = Console.ReadLine();
                 check = Double.TryParse(userInput, out num);
@@ -149,16 +174,19 @@ namespace Project
         public static void Goodbye()
         {
             Console.WriteLine(_goodbye);
+            Logger.Logger.Loging("Program exit");
             Environment.Exit(0);
         }
         private static DateTime CheckedDate(DateTime date)
         {
             while (date > DateTime.Now)
             {
+                Logger.Logger.Loging($"Invalid user answer. User input: {date} which is more than current date");
                 Console.WriteLine(_incorrectDate, date, DateTime.Now);
                 string userInput = Console.ReadLine();
                 userInput = TryParseToDate(userInput);
                 date = DateTime.Parse(userInput);
+                userInput = null;
             }
             return date;
         }
@@ -178,32 +206,42 @@ namespace Project
             {
                 Console.WriteLine(_loanConditionsReadFormat, i.Item1, i.Item2, i.Item3, i.Item4, i.Item5, i.Item6);
             }
+            Logger.Logger.Loging("Conditions showed");
+            conditions = null;
         }
-        public static (LoanName, double) ShowConditions(dynamic loan)
-        {
-            return loan.ThisConditions();
-        }
-        private static double? AskUnderwritter(double income, dynamic loan)
+        private static double AskUnderwritter(double income, dynamic loan)
         {
             if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MaxSum) return loan.MaxSum;
-            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return null;
+            else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MinSum) return 0;
             else if (Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) >= loan.MinSum && Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter()) < loan.MaxSum) return Underwriter.Underwriter.EstimateSum(income, loan.ThisConditionsForUnderwriter());
             else
             {
                 Console.WriteLine("Smth goes wrong!!!");
-                return null;
+                return 0;
             }
         }
         private static bool CheckedID(string userInput)
         {
-            if (userInput.Length == Constants.PassportIDLength) return true;
-            else return false;
+            if (userInput.Length == Constants.PassportIDLength)
+            {
+                Logger.Logger.Loging($"ID contains propper number of chars.");
+                return true;
+            }
+            else
+            {
+                Logger.Logger.Loging($"Invalid ID. User ID contains: {userInput.Length} chars, but must contain {Constants.PassportIDLength} chars.");
+                return false;
+            } 
         }
         private static string CheckIsItPhoneNumber(string phoneNumber)
         {
             int flag = Constants.StartNumberDefenition;
 
-            if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
+            if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat)
+            { 
+                flag += 1;
+                Logger.Logger.Loging($"Invalid Phone number. User input - {phoneNumber}.");
+            }
             for (int i = 0; i < phoneNumber.Split('-').Length; i++)
             {
                 if (Int32.TryParse(phoneNumber.Split('-')[i], out i) == false) flag += 1;
@@ -211,6 +249,7 @@ namespace Project
             while (flag != Constants.StartNumberDefenition)
             {
                 Console.WriteLine(SorryMessage, _phoneNumFormat);
+                Logger.Logger.Loging($"Invalid Phone number. User input - {phoneNumber}.");
                 phoneNumber = Console.ReadLine();
                 flag = Constants.StartNumberDefenition;
                 if (phoneNumber.Split('-').Length != Constants.numberOfSlotsInPhoneNumberFormat || phoneNumber.Length != Constants.numberOfCharsInPhoneNumberFormat) flag += 1;
@@ -251,10 +290,12 @@ namespace Project
         {
             string userInput = Console.ReadLine();
             string[] splittedUserInput = userInput.Split(" ");
+            splittedUserInput = ValidUserAnswer(splittedUserInput);
             while (String.IsNullOrWhiteSpace(splittedUserInput[0]) || String.IsNullOrWhiteSpace(splittedUserInput[1]))
             {
                 splittedUserInput = ValidUserAnswer(splittedUserInput);
-            }        
+            }
+            userInput = null;
             return CorrectPositionsOfNameAndSurname((splittedUserInput[0], splittedUserInput[1]));
         }
         public static DateTime GetApplicantDateOfBirth((string, string) applicantFullName)
@@ -263,6 +304,7 @@ namespace Project
             string userInput = Console.ReadLine();
             userInput = TryParseToDate(userInput);
             DateTime dateOfBitrh = DateTime.Parse(userInput);
+            userInput = null;
             return CheckedDate(dateOfBitrh);
         }
         public static void CheckIfApplicantIsAdult(Applicant applicant)
@@ -270,6 +312,7 @@ namespace Project
             if (Bot.ValidateApplicantAge(applicant) == false)
             {
                 Console.WriteLine(Bot.LoanAreOnlyForAdult, (applicant.WhenApplicantGotAdult().Year - DateTime.Now.Year));
+                Logger.Logger.Loging($"Applicant is not adult. Applicant age is - {applicant.Age}.");
                 Goodbye();
             }
         }
@@ -290,6 +333,7 @@ namespace Project
             string userInput = Console.ReadLine();
             userInput = TryParseToDouble(userInput);
             double applicantIncome = Double.Parse(userInput);
+            userInput = null;
             return applicantIncome;
         }
         public static string AskPassportID()
@@ -313,6 +357,7 @@ namespace Project
             userInput = TryParseToDate(userInput);
             DateTime date = DateTime.Parse(userInput);
             date = CheckedDate(date);
+            userInput = null;
             return date;
         }
         public static string AskSex()
@@ -321,6 +366,7 @@ namespace Project
             string userInput = Console.ReadLine().ToUpper();
             while (userInput.StartsWith(Constants.Male) == false && userInput.StartsWith(Constants.Female) == false)
             {
+                Logger.Logger.Loging($"Invalid Sex. User input - {userInput}.");
                 Console.WriteLine(_askAgainForInvalidAnswer, Constants.Male, Constants.Female);
                 userInput = Console.ReadLine().ToUpper();
             }
@@ -348,6 +394,7 @@ namespace Project
                     Console.WriteLine("Smth goes wrong!!!");
                     break;
             }
+            userInput = null;
             return answer;
         }
         public static string AskPhoneNumber()
@@ -394,7 +441,6 @@ namespace Project
                 case ((int)LoanName.overdraft):
                     return new Overdraft();
                 default:
-                    Console.WriteLine("Ups. Smth goes wrong!!!");
                     return null;
             }
         }
@@ -411,7 +457,6 @@ namespace Project
                 case ((int)LoanName.overdraft):
                     return new Overdraft(creditSum);
                 default:
-                    Console.WriteLine("Ups. Smth goes wrong!!!");
                     return null;
             }
         }
@@ -422,7 +467,7 @@ namespace Project
             else Console.WriteLine(_chooseAnotherLoan, loan.Name);
             return estimateSum;
         }
-        public static int AskIfApplicantWantOtherLoan(Applicant applicant, double estimateSum)
+        public static int AskIfApplicantWantsOtherLoan(Applicant applicant, double estimateSum)
         {
             Console.WriteLine(_askWhetherToChangeLoan, applicant.Name);
             int decision = GetUserSimpleAnswer();
@@ -450,6 +495,7 @@ namespace Project
             {
                 await JsonSerializer.SerializeAsync<ArrayList>(fs, profile);
             }
+            Logger.Logger.Loging($"JSON created.");
         }
         #endregion
 
@@ -457,7 +503,7 @@ namespace Project
         public static void InsertIntoProfile<T>(ArrayList profile, T info)
         {
             profile.Add(info);
-            //logg
+            Logger.Logger.Loging($"Information {info} added to {profile}.");
         }
 
         public static ArrayList UpdateProfileApplicant<T>(ArrayList profile, T info)
@@ -471,6 +517,7 @@ namespace Project
                 Console.WriteLine($"Исключение: {ex.Message}");
                 Console.WriteLine($"Метод: {ex.TargetSite}");
                 Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                Logger.Logger.Loging($"Exeption - {ex.Message}. Method - {ex.TargetSite}, Stack - {ex.StackTrace}");
             }
             return profile;
         }
@@ -485,6 +532,7 @@ namespace Project
                 Console.WriteLine($"Исключение: {ex.Message}");
                 Console.WriteLine($"Метод: {ex.TargetSite}");
                 Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                Logger.Logger.Loging($"Exeption - {ex.Message}. Method - {ex.TargetSite}, Stack - {ex.StackTrace}");
             }
             return profile;
         }

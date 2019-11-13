@@ -23,7 +23,6 @@ namespace Project
             DateTime applicantBirthday = Bot.GetApplicantDateOfBirth(applicantFullName);
             Applicant applicant = new Applicant(applicantFullName.Item2, applicantFullName.Item1, applicantBirthday);
             Logger.Logger.Loging($"Created Applicant: {applicant}");
-            applicant.Notify += SendSMS;
             Logger.Logger.Loging("Notify on");
             Bot.CheckIfApplicantIsAdult(applicant);
             Logger.Logger.Loging("Applicant is adult");
@@ -44,7 +43,7 @@ namespace Project
             Bot.UpdateProfileApplicant(applicantProfile, applicant);
             double estimateSum = Bot.EstimateCreditSum(applicant.Income, loan);
             Logger.Logger.Loging($"Estimated sum: {estimateSum}");
-            int applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
+            int applicantWantsAnotherLoan = Bot.AskIfApplicantWantsOtherLoan(applicant, estimateSum);
             while (applicantWantsAnotherLoan != (int)SimpleAnswers.AGREE)
             {
                 Bot.ShowTheListOfLoans(applicant);
@@ -53,7 +52,7 @@ namespace Project
                 loan = Bot.CreateALoanType(choosedLoan);
                 estimateSum = Bot.EstimateCreditSum(applicant.Income, loan);
                 Logger.Logger.Loging($"Estimated sum: {estimateSum}");
-                applicantWantsAnotherLoan = Bot.AskIfApplicantWantOtherLoan(applicant, estimateSum);
+                applicantWantsAnotherLoan = Bot.AskIfApplicantWantsOtherLoan(applicant, estimateSum);
             }
             Bot.InsertIntoProfile(applicantProfile, loan);
             Bot.IfToContinue();
@@ -68,6 +67,7 @@ namespace Project
             Console.WriteLine(Bot.ProfileIsFilled, applicant.Name);
             if (applicant.PhoneNumber is null) applicant.PhoneNumber = Bot.AskPhoneNumber();
             Bot.UpdateProfileApplicant(applicantProfile, applicant);
+            applicant.Notify += SendSMS;
             #endregion
 
             #region Underwraiter Calculate Credit Sum For Applicant and Do All Needed Checks
@@ -77,6 +77,7 @@ namespace Project
             loan.CreditAmount = Underwriter.Underwriter.FinalSum(applicantProfile);
             Logger.Logger.Loging($"Credit granted: {loan.CreditAmount}");
             applicant.GetResponseAboutLoanIssue(loan.CreditAmount);
+            applicant.Notify -= SendSMS;
             loan = Bot.CreateALoanType(choosedLoan, loan.CreditAmount);
             Logger.Logger.Loging($"Loan created: {loan}");
             Console.WriteLine(Bot.Acepted, applicant.Name, applicant.Surname, (int)loan.CreditAmount, loan.Name, loan.Term / Constants.MonthInYear, loan.InterestRate, (int)loan.Paymont);
