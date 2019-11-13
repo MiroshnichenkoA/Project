@@ -45,7 +45,6 @@ namespace Project
         private static readonly string _howManyChild = "- How many?";
         private static readonly string _profileIsFilled = "- Thank you {0}! I will send your applicant profile to our specialist. \n After specialists consider the oppotunity to give you a loan, You will be notified by SMS.";
         private static readonly string _noPhoneNumber = "- Oh, I guess we don't have your phone number in our system. We acept only Belorussian phone numbers. Please, provide it in the international format \"+375-XX-XXX-XX-XX\"";
-        private static readonly string _denyed = "- I'm sorry, {0}, you have been denyed to take credit in our bank.";
         private static readonly string _acepted = "- {0} {1}, you have been acepted {2} BYN {3} credit under the following conditions: \n term - {4} years \n rate - {5} per year \n Monthly paymont is {6} BYN. \n Do you agree?";
         private static readonly string _agreementIsSavedInJSON = "Done! You can find your loan agreement in .json file.";
         #endregion

@@ -9,6 +9,7 @@ namespace Project
         private static int counterOfAllCards = Constants.StartNumberDefenition;
 
         public int Number { get;}
+       
         public CreditCard()
         {
             counterOfAllCards += 1;

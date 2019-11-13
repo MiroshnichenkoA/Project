@@ -6,7 +6,7 @@ namespace Project
 {
     public interface ICard
     {
-        private CreditCard RealeseCard()
+        CreditCard RealeseCard()
         {
             CreditCard creditCard = new CreditCard();
             return creditCard;

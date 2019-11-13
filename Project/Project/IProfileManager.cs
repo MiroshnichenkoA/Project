@@ -20,6 +20,5 @@ namespace Project
             Logger.Logger.Loging($"Information {info} updated in {profile}.");
             return profile;
         }
-
     }
 }

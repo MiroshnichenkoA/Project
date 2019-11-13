@@ -42,6 +42,7 @@ namespace Logger
                 LogThis(textToLogg, path);
             }
         }
+        
         static async Task LogThis(string textToLogg, string path)
         {
             using (StreamWriter sw = new StreamWriter(path, true))
