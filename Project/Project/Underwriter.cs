@@ -11,6 +11,7 @@ namespace Underwriter
             bool passportControl = PassportControl.ValidPassport(profile);
             if (passportControl == false || ManUnder27(profile)) 
             {
+                Logger.Logger.Loging($"Passport control false or man is under 27 years old.");
                 return 0;
             }
             else
@@ -26,12 +27,14 @@ namespace Underwriter
                     Console.WriteLine($"Exception: {ex.Message}");
                     Console.WriteLine($"Method: {ex.TargetSite}");
                     Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                    Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Exception: {ex.Message}");
                     Console.WriteLine($"Method: {ex.TargetSite}");
                     Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                    Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
                 }
                 double income = (double)SearchInProfileApplicant(profile, (int)Field.Income);
                 double existingPayments = ExistingPaymonts(profile);
@@ -48,6 +51,7 @@ namespace Underwriter
                     Console.WriteLine($"Exception: {ex.Message}");
                     Console.WriteLine($"Method: {ex.TargetSite}");
                     Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                    Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
                 }
                 double creditSum = CreditPosibility(income) / (1 + rate) * term;
                 double minSum = (double)SearchInProfileLoan(profile, (int)Field.MinSum);
@@ -69,6 +73,7 @@ namespace Underwriter
                 Console.WriteLine($"Exception: {ex.Message}");
                 Console.WriteLine($"Method: {ex.TargetSite}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
             }
             return (double)CreditPosibility(income) / (1 + conditions.Item1) * conditions.Item2;
         }
@@ -84,6 +89,7 @@ namespace Underwriter
                 Console.WriteLine($"Exception: {ex.Message}");
                 Console.WriteLine($"Method: {ex.TargetSite}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Logger.Logger.Loging($"Exception - {ex.Message}, Method: {ex.TargetSite}, Stack Trace: {ex.StackTrace}");
             }
             return income * Constants.CreditPossibilityRatio;
         }
@@ -111,13 +117,6 @@ namespace Underwriter
         {
             Applicant applicant = (Applicant)profile[Constants.Applicant];
             return applicant.GetInfo(index);
-        }
-
-        public static object SearchInProfilePassport(ArrayList profile, int index)
-        {
-            Applicant applicant = (Applicant)profile[Constants.Applicant];
-            Passport passport = applicant.Passport;
-            return passport.GetInfo(index);
         }
 
         public static object SearchInProfileLoan(ArrayList profile, int index)

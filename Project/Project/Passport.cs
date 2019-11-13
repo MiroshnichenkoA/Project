@@ -27,6 +27,7 @@ namespace Project
             _passportID = passportID;
             _dateOfIssue = dateOfIssue;
             _dateOfExpiry = _dateOfIssue.AddYears(Constants.PassportExpirianTerm);
+            Logger.Logger.Loging($"Passport created.");
         }
         #endregion
 
@@ -44,27 +45,13 @@ namespace Project
         {
             switch (index)
             {
-                case (int)Field.Surname:
-                    return _surname;
-                    break;
-                case (int)Field.Name:
-                    return _name;
-                    break;
-                case (int)Field.Bitrhday:
-                    return _dateOfBirth;
-                    break;
-                case (int)Field.Sex:
-                    return _sex;
-                    break;
-                case (int)Field.ID:
-                    return _passportID;
-                    break;
-                case (int)Field.Issue:
-                    return _dateOfIssue;
-                    break;
-                case (int)Field.Expiry:
-                    return _dateOfExpiry;
-                    break;
+                case (int)Field.Surname: return _surname;
+                case (int)Field.Name: return _name;
+                case (int)Field.Bitrhday: return _dateOfBirth;
+                case (int)Field.Sex: return _sex;
+                case (int)Field.ID: return _passportID;
+                case (int)Field.Issue: return _dateOfIssue;
+                case (int)Field.Expiry: return _dateOfExpiry;
             }
             return null;
         }

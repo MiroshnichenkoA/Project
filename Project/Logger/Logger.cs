@@ -9,7 +9,7 @@ namespace Logger
         const int Length = 30;
 
         private static void Main(string[] args)
-        {         
+        {
         }
 
         public static void Loging(string textToLogg)
@@ -42,6 +42,7 @@ namespace Logger
                 LogThis(textToLogg, path);
             }
         }
+        
         static async Task LogThis(string textToLogg, string path)
         {
             using (StreamWriter sw = new StreamWriter(path, true))

@@ -6,7 +6,6 @@ using System.Text;
 
 namespace Project
 {
-    [AdultAge]
     sealed class Applicant : IProfileManager
     {
         public delegate void SMSHandler(string message, string howToNotify);
@@ -16,6 +15,7 @@ namespace Project
         private readonly string _surname;
         private readonly string _name;
         private readonly DateTime _bitrhday;
+        [AdultAge]
         private readonly int _age;
         private Passport _passport;
         private string _phoneNumber;
@@ -67,9 +67,9 @@ namespace Project
         {
             return Birthday.AddYears(Constants.AdultYears);
         }
-        public void GetResponseAboutLoanIssue(double? creditSum)
+        public void GetResponseAboutLoanIssue(double creditSum)
         {
-            if (creditSum == null)
+            if (creditSum == 0)
             {
                 Console.BackgroundColor = ConsoleColor.Red;
                 Notify?.Invoke("Dear customer, we are forced to refuse to provide you a loan.", PhoneNumber);
@@ -96,24 +96,17 @@ namespace Project
         {
             switch (index)
             {
-                case (int)Field.Surname:
-                    return _surname;
-                case (int)Field.Name:
-                    return _name;
-                case (int)Field.Bitrhday:
-                    return _bitrhday;
-                case (int)Field.Age:
-                    return _age;
-                case (int)Field.Passport:
-                    return _passport;
-                case (int)Field.PhoneNumber:
-                    return _phoneNumber;
-                case (int)Field.Sex:
-                    return _sex;
-                case (int)Field.NumOfChild:
-                    return _numOfChild;
-                case (int)Field.Income:
-                    return _income;
+                case (int)Field.Surname: return _surname;
+                case (int)Field.Name: return _name;
+                case (int)Field.Bitrhday: return _bitrhday;
+                case (int)Field.Age: return _age;
+                case (int)Field.Passport: return _passport;
+                case (int)Field.PhoneNumber: return _phoneNumber;
+                case (int)Field.Sex: return _sex;
+                case (int)Field.NumOfChild: return _numOfChild;
+                case (int)Field.Income: return _income;
+                default:
+                    break;
             }
             return null;
         }
